@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Donga-2 | Sweet Success: Lemonade Stand Economics</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #1a2744;
+  --navy-light: #243257;
+  --gold: #c8a84b;
+  --gold-light: #e8d08a;
+  --white: #ffffff;
+  --bg: #f7f5f0;
+  --text: #1a1a2e;
+  --gray: #888;
+  --border: #ddd;
+  --green: #2e7d52;
+  --green-bg: #e8f5ee;
+  --red: #c0392b;
+  --red-bg: #fdecea;
+  --sidebar-w: 230px;
+  --lemon: #f5c518;
+  --lemon-pale: #fffbe6;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; }
+
+/* SIDEBAR */
+#sidebar {
+  width: var(--sidebar-w);
+  background: var(--navy);
+  color: #fff;
+  position: fixed; top: 0; left: 0; bottom: 0;
+  overflow-y: auto; z-index: 100;
+  display: flex; flex-direction: column;
+}
+#sidebar .logo {
+  padding: 22px 18px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  background: linear-gradient(135deg, #1a2744 60%, #243257);
+}
+#sidebar .logo .series { font-size: 10px; letter-spacing: 3px; color: var(--gold); text-transform: uppercase; margin-bottom: 5px; }
+#sidebar .logo .title { font-family: 'Playfair Display', serif; font-size: 14px; line-height: 1.4; color: #fff; }
+#sidebar .logo .author { font-size: 10px; color: rgba(255,255,255,0.45); margin-top: 6px; font-style: italic; }
+#sidebar .ch-list { padding: 12px 0; flex: 1; }
+#sidebar .ch-btn {
+  display: block; width: 100%; text-align: left;
+  padding: 12px 18px; font-size: 12px; font-family: 'Noto Sans KR', sans-serif;
+  background: none; border: none; color: rgba(255,255,255,0.65);
+  cursor: pointer; transition: all 0.2s;
+  border-left: 3px solid transparent; line-height: 1.5;
+}
+#sidebar .ch-btn:hover { background: rgba(255,255,255,0.07); color: #fff; }
+#sidebar .ch-btn.active { background: rgba(200,168,75,0.15); color: var(--gold); border-left-color: var(--gold); }
+#sidebar .ch-btn .ch-num { font-size: 10px; color: var(--gold-light); display: block; margin-bottom: 2px; opacity: 0.7; }
+
+/* MAIN */
+#main { margin-left: var(--sidebar-w); flex: 1; min-height: 100vh; }
+
+.chapter-panel { display: none; }
+.chapter-panel.active { display: block; }
+
+/* CHAPTER HEADER */
+.ch-header {
+  background: var(--navy);
+  color: #fff;
+  padding: 30px 36px 26px;
+  position: relative; overflow: hidden;
+}
+.ch-header::before {
+  content: '🍋';
+  position: absolute; right: 30px; top: 50%; transform: translateY(-50%);
+  font-size: 64px; opacity: 0.08;
+}
+.ch-header .label { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+.ch-header h1 { font-family: 'Playfair Display', serif; font-size: 20px; line-height: 1.35; margin-bottom: 5px; }
+.ch-header .subtitle { font-size: 12px; color: rgba(255,255,255,0.5); font-family: 'Lora', serif; font-style: italic; }
+
+/* TABS */
+.tab-nav {
+  background: #fff; border-bottom: 2px solid var(--border);
+  display: flex; overflow-x: auto; padding: 0 20px;
+  position: sticky; top: 0; z-index: 50;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.tab-btn {
+  padding: 13px 16px; font-size: 12px; font-family: 'Noto Sans KR', sans-serif;
+  background: none; border: none; cursor: pointer;
+  color: var(--gray); white-space: nowrap;
+  border-bottom: 3px solid transparent; margin-bottom: -2px;
+  transition: all 0.2s;
+}
+.tab-btn:hover { color: var(--navy); }
+.tab-btn.active { color: var(--navy); border-bottom-color: var(--gold); font-weight: 700; }
+
+/* TAB CONTENT */
+.tab-content { display: none; padding: 28px 36px 56px; }
+.tab-content.active { display: block; }
+
+/* SECTION TITLE */
+.sec-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px; color: var(--navy);
+  border-bottom: 2px solid var(--gold);
+  padding-bottom: 8px; margin-bottom: 22px;
+  display: flex; align-items: center; gap: 10px;
+}
+.sec-title .num {
+  background: var(--navy); color: var(--gold);
+  width: 26px; height: 26px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 12px; font-family: 'Noto Sans KR', sans-serif; flex-shrink: 0;
+}
+
+/* FULL TEXT */
+.fulltext-box {
+  background: #fff; border: 2px solid var(--navy);
+  border-radius: 8px; padding: 24px 28px;
+  font-family: 'Lora', serif; font-size: 16px;
+  line-height: 1.95; color: var(--navy); margin-bottom: 20px;
+}
+.fulltext-box p { margin-bottom: 14px; }
+.fulltext-box p:last-child { margin-bottom: 0; }
+
+/* INFO BOX */
+.info-box {
+  background: var(--lemon-pale); border-left: 4px solid var(--lemon);
+  border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 14px 0;
+  font-size: 13px; line-height: 1.8;
+}
+.info-box .ib-title { font-weight: 700; color: var(--navy); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+
+/* FORMULA BOX */
+.formula-box {
+  background: var(--navy); color: #fff;
+  border-radius: 8px; padding: 16px 22px; margin: 16px 0;
+  font-family: 'Lora', serif;
+}
+.formula-box .f-main { font-size: 18px; font-weight: 700; color: var(--gold); margin-bottom: 12px; letter-spacing: 1px; }
+.formula-box .f-item { font-size: 12px; color: rgba(255,255,255,0.8); margin-bottom: 4px; }
+.formula-box .f-item span { color: var(--gold-light); font-weight: 700; }
+
+/* RECIPE BOX */
+.recipe-box {
+  background: #fff; border: 2px solid var(--gold);
+  border-radius: 8px; padding: 18px 22px; margin: 16px 0;
+}
+.recipe-box .r-title { font-family: 'Playfair Display', serif; font-size: 14px; color: var(--navy); margin-bottom: 12px; }
+.recipe-step { display: flex; gap: 12px; margin-bottom: 10px; align-items: flex-start; font-size: 13px; line-height: 1.6; }
+.recipe-step .r-num { background: var(--gold); color: #fff; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+/* SENTENCE ANALYSIS */
+.sent-block { margin-bottom: 24px; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 6px rgba(0,0,0,0.06); }
+.sent-num-row { background: var(--navy); color: var(--gold); font-size: 12px; font-weight: 700; padding: 6px 14px; letter-spacing: 1px; }
+.sent-en { background: #fff; border-left: 4px solid var(--gold); padding: 14px 18px; font-family: 'Lora', serif; font-size: 16px; line-height: 1.8; color: var(--navy); }
+.sent-slash { background: #f8f7f3; border-left: 4px solid #ddd; padding: 10px 18px; font-size: 13px; line-height: 1.7; }
+.sent-slash .slash-en { font-family: 'Lora', serif; font-size: 14px; color: #333; margin-bottom: 3px; }
+.sent-slash .slash-ko { color: #666; font-size: 12px; }
+.gram-list { background: #fffdf0; border-left: 4px solid var(--gold); padding: 10px 18px; }
+.gram-item { margin-bottom: 8px; font-size: 12px; line-height: 1.7; }
+.gram-item:last-child { margin-bottom: 0; }
+.gram-item .g-name { color: var(--navy); font-weight: 700; }
+.gram-item .g-ex { color: #555; margin-left: 8px; font-family: 'Lora', serif; font-size: 13px; }
+.gram-item .g-point { color: #c0392b; display: block; margin-left: 8px; font-size: 11px; margin-top: 2px; }
+
+/* VOCAB */
+.vocab-item {
+  background: #fff; border-left: 4px solid var(--green);
+  border-radius: 0 6px 6px 0; padding: 10px 16px; margin-bottom: 10px;
+  display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; font-size: 13px;
+}
+.vocab-word { font-family: 'Lora', serif; font-size: 16px; font-weight: 700; color: var(--navy); min-width: 150px; }
+.vocab-meaning { color: #333; min-width: 120px; }
+.vocab-pos { color: var(--green); font-size: 11px; font-weight: 700; background: var(--green-bg); padding: 2px 7px; border-radius: 10px; }
+.vocab-deriv { color: var(--gray); font-size: 11px; font-style: italic; }
+
+/* TRANSLATION */
+.trans-box { background: #fff; border-radius: 8px; padding: 24px 28px; font-size: 15px; line-height: 2.1; color: #333; box-shadow: 0 1px 6px rgba(0,0,0,0.06); }
+.trans-box p { margin-bottom: 14px; }
+.trans-box p:last-child { margin-bottom: 0; }
+
+/* TOPIC */
+.topic-card { background: #fff; border-radius: 8px; padding: 20px 24px; margin-bottom: 16px; box-shadow: 0 1px 6px rgba(0,0,0,0.06); }
+.topic-card .tc-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); font-weight: 700; margin-bottom: 8px; }
+.topic-card .tc-content { font-size: 14px; line-height: 1.9; color: #333; }
+.flow-steps { display: flex; gap: 0; flex-wrap: wrap; margin-top: 10px; }
+.flow-step { background: var(--navy); color: #fff; padding: 8px 14px; font-size: 12px; position: relative; margin-right: 22px; margin-bottom: 8px; border-radius: 4px; line-height: 1.4; }
+.flow-step::after { content: '→'; position: absolute; right: -18px; top: 50%; transform: translateY(-50%); color: var(--navy); font-size: 14px; }
+.flow-step:last-child::after { display: none; }
+
+/* QUIZ */
+.quiz-block { background: #fff; border-radius: 10px; padding: 22px 24px; margin-bottom: 24px; box-shadow: 0 1px 6px rgba(0,0,0,0.07); }
+.quiz-block .q-num { font-size: 10px; color: var(--gold); letter-spacing: 2px; font-weight: 700; margin-bottom: 6px; }
+.quiz-block .q-text { font-size: 14px; line-height: 1.9; color: var(--navy); margin-bottom: 16px; font-weight: 500; }
+.quiz-block .q-text .blank { display: inline-block; min-width: 80px; border-bottom: 2px solid var(--navy); text-align: center; font-style: italic; color: var(--gray); padding: 0 4px; }
+.options { display: flex; flex-direction: column; gap: 8px; }
+.opt-btn { padding: 10px 16px; border-radius: 6px; border: 1.5px solid var(--border); background: #fafafa; cursor: pointer; font-size: 13px; font-family: 'Noto Sans KR', sans-serif; text-align: left; transition: all 0.15s; color: #333; line-height: 1.5; }
+.opt-btn:hover:not(:disabled) { border-color: var(--navy); background: #f0f2f8; }
+.opt-btn.correct { background: var(--green-bg); border-color: var(--green); color: var(--green); font-weight: 700; }
+.opt-btn.wrong { background: var(--red-bg); border-color: var(--red); color: var(--red); }
+.opt-btn.reveal { background: var(--green-bg); border-color: var(--green); color: var(--green); }
+.q-result { margin-top: 10px; font-size: 12px; padding: 8px 12px; border-radius: 6px; display: none; }
+.q-result.show { display: block; }
+.q-result.ok { background: var(--green-bg); color: var(--green); }
+.q-result.no { background: var(--red-bg); color: var(--red); }
+.q-explain { margin-top: 8px; font-size: 12px; color: #555; background: #f5f5f5; padding: 8px 12px; border-radius: 6px; display: none; }
+.q-explain.show { display: block; }
+.reset-btn { margin-top: 12px; padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border); background: #fff; font-size: 11px; cursor: pointer; color: var(--gray); display: none; }
+.reset-btn.show { display: inline-block; }
+.reset-btn:hover { border-color: var(--navy); color: var(--navy); }
+
+/* ESSAY */
+.essay-textarea { width: 100%; min-height: 90px; border: 1.5px solid var(--border); border-radius: 6px; padding: 10px 14px; font-size: 13px; font-family: 'Noto Sans KR', sans-serif; resize: vertical; color: #333; background: #fafafa; line-height: 1.7; }
+.essay-textarea:focus { outline: none; border-color: var(--navy); background: #fff; }
+.e-cond { font-size: 12px; color: #fff; background: var(--navy); display: inline-block; padding: 3px 10px; border-radius: 10px; margin-bottom: 10px; }
+.show-ans-btn { margin-top: 10px; padding: 7px 18px; background: var(--navy); color: var(--gold); border: none; border-radius: 6px; font-size: 12px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; transition: background 0.2s; }
+.show-ans-btn:hover { background: var(--navy-light); }
+.model-answer { margin-top: 12px; padding: 12px 16px; background: #f0f4f0; border-left: 4px solid var(--green); border-radius: 0 6px 6px 0; font-size: 13px; line-height: 1.8; color: #2e5a3e; display: none; }
+.model-answer.show { display: block; }
+.model-answer .ma-label { font-size: 10px; font-weight: 700; color: var(--green); letter-spacing: 1px; margin-bottom: 4px; }
+
+/* NUMBERS HIGHLIGHT */
+.num-highlight { background: var(--navy); color: var(--gold); font-weight: 700; padding: 1px 6px; border-radius: 4px; font-size: 13px; }
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(26,39,68,0.2); border-radius: 3px; }
+
+@media (max-width: 700px) {
+  :root { --sidebar-w: 0px; }
+  #sidebar { display: none; }
+  #main { margin-left: 0; }
+  .tab-content { padding: 16px; }
+  .ch-header { padding: 20px 16px; }
+}
+</style>
+</head>
+<body>
+
+<div id="sidebar">
+  <div class="logo">
+    <div class="series">Donga-2</div>
+    <div class="title">Sweet Success: Lemonade Stand Economics</div>
+    <div class="author">by Luke Peres</div>
+  </div>
+  <div class="ch-list">
+    <button class="ch-btn active" onclick="showChapter(0)">
+      <span class="ch-num">SECTION 1</span>서론 &amp; 계획 수립
+    </button>
+    <button class="ch-btn" onclick="showChapter(1)">
+      <span class="ch-num">SECTION 2</span>가격 책정 (Pricing)
+    </button>
+    <button class="ch-btn" onclick="showChapter(2)">
+      <span class="ch-num">SECTION 3</span>마케팅 (Marketing)
+    </button>
+    <button class="ch-btn" onclick="showChapter(3)">
+      <span class="ch-num">SECTION 4</span>결과 (The Results)
+    </button>
+  </div>
+</div>
+
+<div id="main">
+
+<!-- ===== SECTION 1: 서론 & 계획 수립 ===== -->
+<div class="chapter-panel active" id="ch0">
+  <div class="ch-header">
+    <div class="label">SECTION 1</div>
+    <h1>Sweet Success — Setting Up Our Plans</h1>
+    <div class="subtitle">서론 &amp; 계획 수립</div>
+  </div>
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="showTab('ch0','t0')">📄 전문</button>
+    <button class="tab-btn" onclick="showTab('ch0','t1')">🔍 문장분석</button>
+    <button class="tab-btn" onclick="showTab('ch0','t2')">📚 핵심단어</button>
+    <button class="tab-btn" onclick="showTab('ch0','t3')">🇰🇷 전문해석</button>
+    <button class="tab-btn" onclick="showTab('ch0','t4')">💡 주제·요지</button>
+    <button class="tab-btn" onclick="showTab('ch0','t5')">✏️ 변형문제</button>
+  </div>
+
+  <!-- 전문 -->
+  <div class="tab-content active" id="ch0-t0">
+    <div class="sec-title"><span class="num">1</span> 전문</div>
+    <div class="fulltext-box">
+      <p>High school is not only where we study different subjects but also where we learn about life. We are a group of students that get together every week to discuss ways to make a difference in our society. In this newsletter, I would like to share the story of how we participated in our community's international food festival. On top of raising enough money to make a donation, we learned a lot about how to create and carry out a business plan. Here is our story.</p>
+      <p><strong>Choosing What to Sell:</strong><br>
+      The first step we took was to decide what to sell. Some of the ideas that we discussed included cotton candy, corn dogs, and lemonade. Out of these options, we agreed that a lemonade stand would be the easiest for us, as we would need only a good recipe and a few ingredients. We also found out that no other stand had signed up to sell drinks, so lemonade seemed to be the natural choice.</p>
+      <p><strong>Finding the Perfect Recipe:</strong><br>
+      Once we decided on lemonade, we needed the perfect recipe. Fortunately, we were able to find a simple one online. We just needed freshly squeezed lemons, sugar, water, and ice. After trying out different variations of the recipe on friends and family, we decided on the final recipe. It would make about 1.5 liters of lemonade, which could be sold as five cups.</p>
+    </div>
+    <div class="recipe-box">
+      <div class="r-title">🍋 Our Lemonade Recipe</div>
+      <div class="recipe-step"><div class="r-num">1</div><div>Boil the sugar and 1 cup of water together. Set it aside to cool.</div></div>
+      <div class="recipe-step"><div class="r-num">2</div><div>Squeeze the lemons to make 1 cup of fresh lemon juice.</div></div>
+      <div class="recipe-step"><div class="r-num">3</div><div>Blend the lemon juice with 3 cups of water. Then add the syrup from Step 1.</div></div>
+      <div class="recipe-step"><div class="r-num">4</div><div>Serve the lemonade over ice. Add some lemon slices for decoration.</div></div>
+    </div>
+  </div>
+
+  <!-- 문장분석 -->
+  <div class="tab-content" id="ch0-t1">
+    <div class="sec-title"><span class="num">2</span> 문장분석</div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">① 문장 1</div>
+      <div class="sent-en">High school is not only where we study different subjects but also where we learn about life.</div>
+      <div class="sent-slash">
+        <div class="slash-en">High school / is not only / where we study different subjects / but also / where we learn about life.</div>
+        <div class="slash-ko">고등학교는 / ~만이 아니다 / 우리가 다양한 과목을 공부하는 곳 / ~이기도 하다 / 우리가 삶에 대해 배우는 곳.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ not only A but also B (상관접속사)</span><span class="g-ex">not only where ~ but also where ~</span><span class="g-point">★ A와 B는 문법적으로 병렬 구조 — 둘 다 관계부사 where절; 수능 빈출 구조</span></div>
+        <div class="gram-item"><span class="g-name">◆ 관계부사 where</span><span class="g-ex">where we study / where we learn</span><span class="g-point">★ 선행사(High school)를 수식하는 관계부사절; in which로 교체 가능</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">② 문장 2</div>
+      <div class="sent-en">We are a group of students that get together every week to discuss ways to make a difference in our society.</div>
+      <div class="sent-slash">
+        <div class="slash-en">We are a group of students / that get together / every week / to discuss ways / to make a difference / in our society.</div>
+        <div class="slash-ko">우리는 학생들의 모임이다 / 모이는 / 매주 / 방법들을 논의하기 위해 / 변화를 만들 / 우리 사회에서.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ 관계대명사 that (주격)</span><span class="g-ex">students that get together</span><span class="g-point">★ 선행사(students) 수식; who로 교체 가능</span></div>
+        <div class="gram-item"><span class="g-name">◆ to부정사 연속 수식</span><span class="g-ex">ways to make a difference</span><span class="g-point">★ to discuss(목적) + ways to make(ways 수식 형용사적 용법) — 이중 to부정사</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">③ 문장 3</div>
+      <div class="sent-en">In this newsletter, I would like to share the story of how we participated in our community's international food festival.</div>
+      <div class="sent-slash">
+        <div class="slash-en">In this newsletter, / I would like to share / the story / of how we participated / in our community's international food festival.</div>
+        <div class="slash-ko">이 뉴스레터에서 / 나는 공유하고 싶다 / 이야기를 / 우리가 어떻게 참여했는지에 관한 / 우리 지역사회의 국제 음식 축제에.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ would like to (정중한 의향)</span><span class="g-ex">I would like to share</span><span class="g-point">★ want to의 격식체; 조동사 would + like to + 동사원형</span></div>
+        <div class="gram-item"><span class="g-name">◆ 간접의문문 how</span><span class="g-ex">the story of how we participated</span><span class="g-point">★ 전치사 of의 목적어로 쓰인 간접의문문; how + 주어 + 동사 어순</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">④ 문장 4</div>
+      <div class="sent-en">On top of raising enough money to make a donation, we learned a lot about how to create and carry out a business plan.</div>
+      <div class="sent-slash">
+        <div class="slash-en">On top of raising enough money / to make a donation, / we learned a lot / about how to create / and carry out a business plan.</div>
+        <div class="slash-ko">충분한 돈을 모으는 것 외에도 / 기부를 하기 위해 / 우리는 많이 배웠다 / 어떻게 만들고 / 사업 계획을 실행할지에 대해.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ on top of + 동명사</span><span class="g-ex">On top of raising enough money</span><span class="g-point">★ '~에 더하여, ~ 외에도' — 전치사구이므로 뒤에 동명사 필수</span></div>
+        <div class="gram-item"><span class="g-name">◆ 의문사 + to부정사</span><span class="g-ex">how to create and carry out</span><span class="g-point">★ how to = '어떻게 ~할지' — 간접의문문 대용; 명사구 역할</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">⑤ 문장 5</div>
+      <div class="sent-en">The first step we took was to decide what to sell.</div>
+      <div class="sent-slash">
+        <div class="slash-en">The first step / we took / was to decide / what to sell.</div>
+        <div class="slash-ko">첫 번째 단계는 / 우리가 취한 / 결정하는 것이었다 / 무엇을 팔지.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ 관계대명사 목적격 생략</span><span class="g-ex">The first step (that) we took</span><span class="g-point">★ 목적격 관계대명사 that/which 생략; step과 we 사이 that 생략됨</span></div>
+        <div class="gram-item"><span class="g-name">◆ 의문사 + to부정사 (what to)</span><span class="g-ex">what to sell</span><span class="g-point">★ what to sell = what we should sell; decide의 목적어 역할</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">⑥ 문장 6</div>
+      <div class="sent-en">Some of the ideas that we discussed included cotton candy, corn dogs, and lemonade.</div>
+      <div class="sent-slash">
+        <div class="slash-en">Some of the ideas / that we discussed / included / cotton candy, corn dogs, and lemonade.</div>
+        <div class="slash-ko">아이디어들 중 일부는 / 우리가 논의한 / 포함했다 / 솜사탕, 콘도그, 그리고 레모네이드를.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ some of + 명사 (부분 표현)</span><span class="g-ex">Some of the ideas</span><span class="g-point">★ some/all/most/half of + 명사 — 뒤 명사 수에 동사 수 일치</span></div>
+        <div class="gram-item"><span class="g-name">◆ 관계대명사 목적격 that</span><span class="g-ex">ideas that we discussed</span><span class="g-point">★ discussed의 목적어 역할 → 목적격 관계대명사; 생략 가능</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">⑦ 문장 7</div>
+      <div class="sent-en">Out of these options, we agreed that a lemonade stand would be the easiest for us, as we would need only a good recipe and a few ingredients.</div>
+      <div class="sent-slash">
+        <div class="slash-en">Out of these options, / we agreed / that a lemonade stand / would be the easiest for us, / as we would need / only a good recipe / and a few ingredients.</div>
+        <div class="slash-ko">이 선택지들 중에서 / 우리는 동의했다 / 레모네이드 가판대가 / 우리에게 가장 쉬울 것이라고 / 우리가 필요로 할 것이기 때문에 / 좋은 레시피만 / 그리고 몇 가지 재료.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ 이유 접속사 as</span><span class="g-ex">as we would need only a good recipe</span><span class="g-point">★ as = because/since; 이유·원인의 부사절 접속사</span></div>
+        <div class="gram-item"><span class="g-name">◆ 최상급 (the + -est)</span><span class="g-ex">the easiest for us</span><span class="g-point">★ 세 가지 이상 비교 → 최상급; for us = '우리에게 있어서'</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">⑧ 문장 8</div>
+      <div class="sent-en">We also found out that no other stand had signed up to sell drinks, so lemonade seemed to be the natural choice.</div>
+      <div class="sent-slash">
+        <div class="slash-en">We also found out / that no other stand / had signed up / to sell drinks, / so lemonade / seemed to be / the natural choice.</div>
+        <div class="slash-ko">우리는 또한 알게 되었다 / 다른 어떤 가판대도 / 등록하지 않았다는 것을 / 음료를 팔기 위해 / 그래서 레모네이드는 / ~인 것 같았다 / 자연스러운 선택.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ 과거완료 (had + p.p.)</span><span class="g-ex">had signed up</span><span class="g-point">★ 과거(found out)보다 먼저 일어난 일 → 과거완료; 시제 차이 명확화</span></div>
+        <div class="gram-item"><span class="g-name">◆ seem to + 동사원형</span><span class="g-ex">seemed to be the natural choice</span><span class="g-point">★ '~인 것 같다' — 추측·판단 표현; seem + 형용사/to be + 보어</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">⑨ 문장 9</div>
+      <div class="sent-en">Once we decided on lemonade, we needed the perfect recipe.</div>
+      <div class="sent-slash">
+        <div class="slash-en">Once we decided on lemonade, / we needed the perfect recipe.</div>
+        <div class="slash-ko">일단 레모네이드로 결정하자 / 우리는 완벽한 레시피가 필요했다.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ 접속사 once (일단 ~하면)</span><span class="g-ex">Once we decided on lemonade</span><span class="g-point">★ once = '일단 ~하면/~하자마자'; 시간 부사절 접속사 — as soon as와 유사</span></div>
+        <div class="gram-item"><span class="g-name">◆ decide on (결정하다)</span><span class="g-ex">decided on lemonade</span><span class="g-point">★ decide on + 명사 = '~로 결정하다'; on은 필수 전치사</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">⑩ 문장 10</div>
+      <div class="sent-en">Fortunately, we were able to find a simple one online.</div>
+      <div class="sent-slash">
+        <div class="slash-en">Fortunately, / we were able to find / a simple one online.</div>
+        <div class="slash-ko">다행히도 / 우리는 찾을 수 있었다 / 간단한 것을 온라인에서.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ be able to (능력·성공)</span><span class="g-ex">were able to find</span><span class="g-point">★ could와 달리 be able to는 특정 상황에서 성공했음을 강조; 과거 성공 시 be able to 선호</span></div>
+        <div class="gram-item"><span class="g-name">◆ 대명사 one</span><span class="g-ex">a simple one (= recipe)</span><span class="g-point">★ 앞에서 언급된 가산 명사(recipe) 대체; a/an + one 가능</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">⑪ 문장 11</div>
+      <div class="sent-en">After trying out different variations of the recipe on friends and family, we decided on the final recipe.</div>
+      <div class="sent-slash">
+        <div class="slash-en">After trying out / different variations / of the recipe / on friends and family, / we decided on the final recipe.</div>
+        <div class="slash-ko">다양한 변형들을 시험해본 후 / 레시피의 / 친구들과 가족에게 / 우리는 최종 레시피를 결정했다.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ After + 동명사 (분사구문 대체)</span><span class="g-ex">After trying out different variations</span><span class="g-point">★ 전치사 after + 동명사구; 주절 주어(we)와 동일 주어 생략</span></div>
+        <div class="gram-item"><span class="g-name">◆ try out (시험해 보다)</span><span class="g-ex">trying out different variations</span><span class="g-point">★ try out = '~을 시험해 보다' ↔ try = '시도하다'; 구동사 어휘 구별</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">⑫ 문장 12</div>
+      <div class="sent-en">It would make about 1.5 liters of lemonade, which could be sold as five cups.</div>
+      <div class="sent-slash">
+        <div class="slash-en">It would make / about 1.5 liters of lemonade, / which could be sold / as five cups.</div>
+        <div class="slash-ko">그것은 만들 것이었다 / 약 1.5리터의 레모네이드를 / 그것은 팔릴 수 있었다 / 다섯 잔으로.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ 계속적 용법 관계대명사 which</span><span class="g-ex">, which could be sold</span><span class="g-point">★ 콤마(,) + which = 앞 절 전체·명사 부연 설명; that으로 교체 불가</span></div>
+        <div class="gram-item"><span class="g-name">◆ 수동태 (be + p.p.)</span><span class="g-ex">could be sold as five cups</span><span class="g-point">★ 조동사 + be + p.p. 수동태 구조; 행위자(by ~) 생략</span></div>
+      </div>
+    </div>
+
+  </div><!-- /문장분석 -->
+
+  <!-- 핵심단어 -->
+  <div class="tab-content" id="ch0-t2">
+    <div class="sec-title"><span class="num">3</span> 핵심단어 및 표현</div>
+    <div class="vocab-item"><span class="vocab-word">make a difference</span><span class="vocab-meaning">변화를 만들다, 영향을 미치다</span><span class="vocab-pos">phr.</span><span class="vocab-deriv">difference (n.)</span></div>
+    <div class="vocab-item"><span class="vocab-word">participate in</span><span class="vocab-meaning">~에 참여하다</span><span class="vocab-pos">phr.</span><span class="vocab-deriv">participation (n.), participant (n.)</span></div>
+    <div class="vocab-item"><span class="vocab-word">on top of</span><span class="vocab-meaning">~에 더하여, ~ 외에도</span><span class="vocab-pos">phr.</span><span class="vocab-deriv">—</span></div>
+    <div class="vocab-item"><span class="vocab-word">carry out</span><span class="vocab-meaning">실행하다, 수행하다</span><span class="vocab-pos">phr.</span><span class="vocab-deriv">—</span></div>
+    <div class="vocab-item"><span class="vocab-word">ingredient</span><span class="vocab-meaning">재료, 성분</span><span class="vocab-pos">n.</span><span class="vocab-deriv">—</span></div>
+    <div class="vocab-item"><span class="vocab-word">sign up</span><span class="vocab-meaning">등록하다, 신청하다</span><span class="vocab-pos">phr.</span><span class="vocab-deriv">sign-up (n.)</span></div>
+    <div class="vocab-item"><span class="vocab-word">variation</span><span class="vocab-meaning">변형, 변화</span><span class="vocab-pos">n.</span><span class="vocab-deriv">vary (v.), various (adj.)</span></div>
+    <div class="vocab-item"><span class="vocab-word">freshly squeezed</span><span class="vocab-meaning">갓 짜낸</span><span class="vocab-pos">phr.</span><span class="vocab-deriv">squeeze (v.)</span></div>
+    <div class="vocab-item"><span class="vocab-word">natural choice</span><span class="vocab-meaning">자연스러운 선택</span><span class="vocab-pos">phr.</span><span class="vocab-deriv">naturally (adv.)</span></div>
+    <div class="vocab-item"><span class="vocab-word">donation</span><span class="vocab-meaning">기부, 기증</span><span class="vocab-pos">n.</span><span class="vocab-deriv">donate (v.), donor (n.)</span></div>
+  </div>
+
+  <!-- 전문해석 -->
+  <div class="tab-content" id="ch0-t3">
+    <div class="sec-title"><span class="num">4</span> 전문해석</div>
+    <div class="trans-box">
+      <p>고등학교는 우리가 다양한 과목을 공부하는 곳일 뿐 아니라, 삶에 대해 배우는 곳이기도 합니다. 우리는 매주 모여 사회에 변화를 만들 방법을 논의하는 학생들의 모임입니다. 이 뉴스레터에서, 우리가 지역사회의 국제 음식 축제에 참여했던 이야기를 공유하고 싶습니다. 기부를 하기 위한 충분한 돈을 모으는 것 외에도, 우리는 사업 계획을 세우고 실행하는 방법에 대해 많은 것을 배웠습니다. 이것이 우리의 이야기입니다.</p>
+      <p><strong>무엇을 팔지 선택하기:</strong><br>
+      우리가 취한 첫 번째 단계는 무엇을 팔지 결정하는 것이었습니다. 우리가 논의한 아이디어 중에는 솜사탕, 콘도그, 레모네이드가 포함되었습니다. 이 선택지들 중에서, 우리는 레모네이드 가판대가 우리에게 가장 쉬울 것이라는 데 동의했는데, 좋은 레시피와 몇 가지 재료만 있으면 되기 때문이었습니다. 또한 다른 어떤 가판대도 음료를 팔기 위해 등록하지 않았다는 것을 알게 되었고, 그래서 레모네이드가 자연스러운 선택인 것 같았습니다.</p>
+      <p><strong>완벽한 레시피 찾기:</strong><br>
+      레모네이드로 결정하고 나서, 우리는 완벽한 레시피가 필요했습니다. 다행히도, 온라인에서 간단한 것을 찾을 수 있었습니다. 갓 짜낸 레몬, 설탕, 물, 그리고 얼음만 있으면 됐습니다. 친구들과 가족에게 레시피의 다양한 변형을 시험해본 후, 최종 레시피를 결정했습니다. 그것으로 약 1.5리터의 레모네이드를 만들 수 있었으며, 다섯 잔으로 판매할 수 있었습니다.</p>
+    </div>
+  </div>
+
+  <!-- 주제·요지 -->
+  <div class="tab-content" id="ch0-t4">
+    <div class="sec-title"><span class="num">5</span> 주제·요지</div>
+    <div class="topic-card">
+      <div class="tc-label">주제</div>
+      <div class="tc-content">학생 봉사 모임이 국제 음식 축제에서 레모네이드 가판대를 운영하기 위해 계획을 세우는 과정</div>
+    </div>
+    <div class="topic-card">
+      <div class="tc-label">요지</div>
+      <div class="tc-content">고등학생 봉사 동아리가 기부금 마련을 목표로 국제 음식 축제에 참가하여, 판매 품목 선정과 레시피 개발이라는 첫 단계를 체계적으로 수행했다.</div>
+    </div>
+    <div class="topic-card">
+      <div class="tc-label">구조 흐름</div>
+      <div class="tc-content">
+        <div class="flow-steps">
+          <div class="flow-step">동아리 소개<br><small>봉사 목적</small></div>
+          <div class="flow-step">판매 품목 선정<br><small>레모네이드 결정</small></div>
+          <div class="flow-step">레시피 개발<br><small>시험 후 최종 확정</small></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 변형문제 -->
+  <div class="tab-content" id="ch0-t5">
+    <div class="sec-title"><span class="num">6</span> 변형문제</div>
+
+    <div class="quiz-block" id="q0_1">
+      <div class="q-num">문항 1 · 주제 추론</div>
+      <div class="q-text">다음 글의 주제로 가장 적절한 것은?</div>
+      <div class="options">
+        <button class="opt-btn" onclick="checkAnswer('q0_1',this,false)">① 국제 음식 축제에서 인기 있는 음식의 종류</button>
+        <button class="opt-btn" onclick="checkAnswer('q0_1',this,false)">② 레모네이드의 다양한 제조 방법과 영양 성분</button>
+        <button class="opt-btn" onclick="checkAnswer('q0_1',this,true)">③ 기부를 목표로 한 학생 봉사 동아리의 레모네이드 가판대 준비 과정</button>
+        <button class="opt-btn" onclick="checkAnswer('q0_1',this,false)">④ 고등학교에서 배울 수 있는 다양한 과목들</button>
+        <button class="opt-btn" onclick="checkAnswer('q0_1',this,false)">⑤ 사업 계획서를 작성하는 방법과 절차</button>
+      </div>
+      <div class="q-result" id="q0_1_result"></div>
+      <div class="q-explain" id="q0_1_explain">글의 전체 흐름이 봉사 동아리(The Helpers)가 기부금 마련을 위해 레모네이드 가판대를 준비하는 과정(품목 선정 → 레시피 개발)을 서술하므로 ③이 정답.</div>
+      <button class="reset-btn" id="q0_1_reset" onclick="resetQuiz('q0_1')">↺ 다시 풀기</button>
+    </div>
+
+    <div class="quiz-block" id="q0_2">
+      <div class="q-num">문항 2 · 빈칸 추론</div>
+      <div class="q-text">We also found out that no other stand had signed up to sell drinks, so lemonade seemed to be <span class="blank">________________</span>.</div>
+      <div class="options">
+        <button class="opt-btn" onclick="checkAnswer('q0_2',this,false)">① the most profitable option</button>
+        <button class="opt-btn" onclick="checkAnswer('q0_2',this,false)">② the most difficult to make</button>
+        <button class="opt-btn" onclick="checkAnswer('q0_2',this,true)">③ the natural choice</button>
+        <button class="opt-btn" onclick="checkAnswer('q0_2',this,false)">④ too risky to try</button>
+        <button class="opt-btn" onclick="checkAnswer('q0_2',this,false)">⑤ the most popular drink</button>
+      </div>
+      <div class="q-result" id="q0_2_result"></div>
+      <div class="q-explain" id="q0_2_explain">경쟁 가판대가 없다는 사실이 레모네이드를 "the natural choice(자연스러운 선택)"로 만들었다고 본문에 직접 서술됨. ③이 정답.</div>
+      <button class="reset-btn" id="q0_2_reset" onclick="resetQuiz('q0_2')">↺ 다시 풀기</button>
+    </div>
+
+    <div class="quiz-block" id="q0_3">
+      <div class="q-num">문항 3 · 어법 오류 찾기</div>
+      <div class="q-text">다음 밑줄 친 부분 중 어법상 틀린 것은?<br><br>
+      High school is not only ①<u>where</u> we study different subjects but also where we learn about life. The first step we took ②<u>was</u> to decide what to sell. We agreed that a lemonade stand would be the ③<u>easiest</u> for us, as we would need only a good recipe and a few ingredients. After ④<u>trying</u> out different variations, we decided on the final recipe. It would make about 1.5 liters of lemonade, ⑤<u>that</u> could be sold as five cups.</div>
+      <div class="options">
+        <button class="opt-btn" onclick="checkAnswer('q0_3',this,false)">① where</button>
+        <button class="opt-btn" onclick="checkAnswer('q0_3',this,false)">② was</button>
+        <button class="opt-btn" onclick="checkAnswer('q0_3',this,false)">③ easiest</button>
+        <button class="opt-btn" onclick="checkAnswer('q0_3',this,false)">④ trying</button>
+        <button class="opt-btn" onclick="checkAnswer('q0_3',this,true)">⑤ that</button>
+      </div>
+      <div class="q-result" id="q0_3_result"></div>
+      <div class="q-explain" id="q0_3_explain">⑤ that → which. 콤마(,) 뒤 계속적 용법에서는 반드시 which를 사용해야 하며, that은 계속적 용법에 쓸 수 없음.</div>
+      <button class="reset-btn" id="q0_3_reset" onclick="resetQuiz('q0_3')">↺ 다시 풀기</button>
+    </div>
+
+    <div class="quiz-block" id="q0_4">
+      <div class="q-num">문항 4 · 내용 불일치</div>
+      <div class="q-text">다음 글의 내용과 일치하지 않는 것은?</div>
+      <div class="options">
+        <button class="opt-btn" onclick="checkAnswer('q0_4',this,false)">① The Helpers는 매주 모여 사회 변화를 만들 방법을 논의한다.</button>
+        <button class="opt-btn" onclick="checkAnswer('q0_4',this,false)">② 다른 가판대가 음료를 팔지 않아 레모네이드를 선택했다.</button>
+        <button class="opt-btn" onclick="checkAnswer('q0_4',this,true)">③ 레모네이드 레시피는 처음부터 완성본으로 온라인에서 찾았다.</button>
+        <button class="opt-btn" onclick="checkAnswer('q0_4',this,false)">④ 최종 레시피 한 배치로 약 다섯 잔의 레모네이드를 만들 수 있다.</button>
+        <button class="opt-btn" onclick="checkAnswer('q0_4',this,false)">⑤ 레모네이드 재료는 레몬, 설탕, 물, 얼음이다.</button>
+      </div>
+      <div class="q-result" id="q0_4_result"></div>
+      <div class="q-explain" id="q0_4_explain">③은 틀린 내용. 본문에서 "After trying out different variations of the recipe on friends and family, we decided on the final recipe"라고 하여 여러 변형을 시험한 후 최종 결정했음을 명시함.</div>
+      <button class="reset-btn" id="q0_4_reset" onclick="resetQuiz('q0_4')">↺ 다시 풀기</button>
+    </div>
+
+    <div class="quiz-block" id="q0_5">
+      <div class="q-num">문항 5 · 서술형</div>
+      <div class="e-cond">조건: 본문에서 레모네이드를 선택한 두 가지 이유를 영어로 찾아 각각 한 문장으로 쓰시오.</div>
+      <textarea class="essay-textarea" style="min-height:100px;" placeholder="이유 1:&#10;이유 2:"></textarea>
+      <button class="show-ans-btn" onclick="toggleAnswer(this)">모범답안 보기</button>
+      <div class="model-answer">
+        <div class="ma-label">모범답안</div>
+        <strong>이유 1:</strong> They would need only a good recipe and a few ingredients. (재료가 간단하기 때문)<br>
+        <strong>이유 2:</strong> No other stand had signed up to sell drinks. (다른 음료 판매 경쟁자가 없었기 때문)
+      </div>
+    </div>
+
+  </div>
+</div><!-- /ch0 -->
+
+
+<!-- ===== SECTION 2: PRICING ===== -->
+<div class="chapter-panel" id="ch1">
+  <div class="ch-header">
+    <div class="label">SECTION 2</div>
+    <h1>Pricing — Costs, Revenue &amp; Profit</h1>
+    <div class="subtitle">가격 책정</div>
+  </div>
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="showTab('ch1','t0')">📄 전문</button>
+    <button class="tab-btn" onclick="showTab('ch1','t1')">🔍 문장분석</button>
+    <button class="tab-btn" onclick="showTab('ch1','t2')">📚 핵심단어</button>
+    <button class="tab-btn" onclick="showTab('ch1','t3')">🇰🇷 전문해석</button>
+    <button class="tab-btn" onclick="showTab('ch1','t4')">💡 주제·요지</button>
+    <button class="tab-btn" onclick="showTab('ch1','t5')">✏️ 변형문제</button>
+  </div>
+
+  <!-- 전문 -->
+  <div class="tab-content active" id="ch1-t0">
+    <div class="sec-title"><span class="num">1</span> 전문</div>
+    <div class="fulltext-box">
+      <p>The main goal of setting up the lemonade stand was to make enough profit for a donation to the local children's home. To maximize our profit, we needed to decrease our costs and increase our revenue.</p>
+      <p>Since we wanted to minimize costs, our first step was to find the most affordable ingredients and cups available. As we were researching prices, we found that buying ingredients and cups in bulk would be the smartest way to go.</p>
+      <p>Now that we had found out how to minimize costs, we needed to decide on a reasonable price for a cup of lemonade. We contacted a festival organizer to gather information. First, we inquired about the previous year's drink prices, and she told us that soft drinks had been sold for $1.50 per cup. Considering that freshly squeezed lemonade usually costs more, we decided to sell each cup for $2. Based on our recipe and the costs of the ingredients and cups, each cup of lemonade would cost us about $0.70 to make. With a selling price of $2, we expected a profit of $1.30 per cup.</p>
+      <p>Regarding attendance, we learned that the festival organizers were expecting around 400 people for each of the two days of the festival. We thought we could reasonably sell lemonade to half of the people attending, so we aimed to sell 400 cups over the two days. If we could do that, our revenue would amount to $800!</p>
+      <p>However, this revenue wouldn't be pure profit. We needed to subtract our costs from it. In addition to the cost of $280 required to make 400 cups, we also had to factor in the $6 we needed for posters and fliers. If we reached our goal, we would be able to make $514 in profit. That would be a big donation!</p>
+    </div>
+    <div class="formula-box">
+      <div class="f-main">PROFIT = REVENUE − COSTS</div>
+      <div class="f-item">• <span>PROFIT</span>: The money that you make in business when revenue exceeds costs</div>
+      <div class="f-item">• <span>REVENUE</span>: The money earned by the business</div>
+      <div class="f-item">• <span>COSTS</span>: The money spent by the business</div>
+    </div>
+    <div class="info-box">
+      <div class="ib-title">📊 수익 계산 요약</div>
+      판매가 <span class="num-highlight">$2</span>/잔 − 원가 <span class="num-highlight">$0.70</span>/잔 = 잔당 이익 <span class="num-highlight">$1.30</span><br>
+      목표 판매량 <span class="num-highlight">400잔</span> × $2 = 총 매출 <span class="num-highlight">$800</span><br>
+      $800 − 원가 $280 − 홍보비 $6 = 예상 이익 <span class="num-highlight">$514</span>
+    </div>
+  </div>
+
+  <!-- 문장분석 -->
+  <div class="tab-content" id="ch1-t1">
+    <div class="sec-title"><span class="num">2</span> 문장분석</div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">① 문장 1</div>
+      <div class="sent-en">The main goal of setting up the lemonade stand was to make enough profit for a donation to the local children's home.</div>
+      <div class="sent-slash">
+        <div class="slash-en">The main goal / of setting up the lemonade stand / was to make / enough profit / for a donation / to the local children's home.</div>
+        <div class="slash-ko">주요 목표는 / 레모네이드 가판대를 설치하는 것의 / ~을 만드는 것이었다 / 충분한 이익을 / 기부를 위한 / 지역 아동원에.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ 동명사 전치사의 목적어</span><span class="g-ex">of setting up the lemonade stand</span><span class="g-point">★ 전치사 of 뒤 동명사구; 동사원형 불가</span></div>
+        <div class="gram-item"><span class="g-name">◆ to부정사 보어 (2형식)</span><span class="g-ex">was to make enough profit</span><span class="g-point">★ 주어(goal) — be동사 — to부정사(보어); 목표·계획 표현</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">② 문장 2</div>
+      <div class="sent-en">To maximize our profit, we needed to decrease our costs and increase our revenue.</div>
+      <div class="sent-slash">
+        <div class="slash-en">To maximize our profit, / we needed to decrease our costs / and increase our revenue.</div>
+        <div class="slash-ko">이익을 극대화하기 위해 / 우리는 비용을 줄여야 했고 / 그리고 수익을 늘려야 했다.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ to부정사 목적 용법 (문두)</span><span class="g-ex">To maximize our profit</span><span class="g-point">★ '~하기 위해' 목적; in order to와 동의; 주절 주어(we)가 의미상 주어</span></div>
+        <div class="gram-item"><span class="g-name">◆ decrease vs increase (반의어)</span><span class="g-ex">decrease ~ costs / increase ~ revenue</span><span class="g-point">★ 경제·비즈니스 핵심 어휘 쌍; 수능 빈칸·어휘 빈출</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">③ 문장 3</div>
+      <div class="sent-en">Since we wanted to minimize costs, our first step was to find the most affordable ingredients and cups available.</div>
+      <div class="sent-slash">
+        <div class="slash-en">Since we wanted to minimize costs, / our first step / was to find / the most affordable / ingredients and cups available.</div>
+        <div class="slash-ko">비용을 최소화하고 싶었기 때문에 / 우리의 첫 번째 단계는 / 찾는 것이었다 / 가장 저렴한 / 구할 수 있는 재료와 컵을.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ 이유 접속사 since</span><span class="g-ex">Since we wanted to minimize costs</span><span class="g-point">★ since = because/as; 원인·이유 부사절; 문두에서 콤마로 주절과 구분</span></div>
+        <div class="gram-item"><span class="g-name">◆ 형용사 후치수식 (available)</span><span class="g-ex">ingredients and cups available</span><span class="g-point">★ -able/-ible 형용사는 명사 뒤 후치수식 가능 → that are available과 동의</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">④ 문장 4</div>
+      <div class="sent-en">As we were researching prices, we found that buying ingredients and cups in bulk would be the smartest way to go.</div>
+      <div class="sent-slash">
+        <div class="slash-en">As we were researching prices, / we found / that buying ingredients and cups / in bulk / would be the smartest way to go.</div>
+        <div class="slash-ko">가격을 조사하면서 / 우리는 알게 되었다 / 재료와 컵을 사는 것이 / 대량으로 / 가장 현명한 방법일 것이라고.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ 동명사 주어</span><span class="g-ex">buying ingredients and cups ~ would be</span><span class="g-point">★ 동명사구(buying ~) 주어 → 단수 취급(would be)</span></div>
+        <div class="gram-item"><span class="g-name">◆ in bulk (관용 표현)</span><span class="g-ex">buying ~ in bulk</span><span class="g-point">★ '대량으로' — 경제·비즈니스 필수 숙어; bulk buy = 대량 구매</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">⑤ 문장 5</div>
+      <div class="sent-en">Now that we had found out how to minimize costs, we needed to decide on a reasonable price for a cup of lemonade.</div>
+      <div class="sent-slash">
+        <div class="slash-en">Now that we had found out / how to minimize costs, / we needed to decide on / a reasonable price / for a cup of lemonade.</div>
+        <div class="slash-ko">이제 우리가 알아냈으므로 / 비용을 최소화하는 방법을 / 우리는 결정해야 했다 / 합리적인 가격을 / 레모네이드 한 잔에 대한.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ now that (이제 ~이므로)</span><span class="g-ex">Now that we had found out</span><span class="g-point">★ '이제 ~이므로/~했으니' — since와 유사하나 새로운 상황 전환 강조</span></div>
+        <div class="gram-item"><span class="g-name">◆ 과거완료 (had found out)</span><span class="g-ex">we had found out how to ~</span><span class="g-point">★ 주절 과거(needed)보다 먼저 완료된 일 → 과거완료</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">⑥ 문장 6</div>
+      <div class="sent-en">We contacted a festival organizer to gather information.</div>
+      <div class="sent-slash">
+        <div class="slash-en">We contacted a festival organizer / to gather information.</div>
+        <div class="slash-ko">우리는 축제 주최자에게 연락했다 / 정보를 모으기 위해.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ to부정사 목적 용법</span><span class="g-ex">to gather information</span><span class="g-point">★ '~하기 위해'; contact a person의 목적을 to부정사로 표현</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">⑦ 문장 7</div>
+      <div class="sent-en">First, we inquired about the previous year's drink prices, and she told us that soft drinks had been sold for $1.50 per cup.</div>
+      <div class="sent-slash">
+        <div class="slash-en">First, we inquired / about the previous year's drink prices, / and she told us / that soft drinks / had been sold / for $1.50 per cup.</div>
+        <div class="slash-ko">먼저 우리는 물어보았다 / 전년도 음료 가격에 대해 / 그리고 그녀는 우리에게 말했다 / 청량음료가 / 판매되었다고 / 한 잔에 1.50달러에.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ 과거완료 수동태 (had been + p.p.)</span><span class="g-ex">had been sold for $1.50</span><span class="g-point">★ told(과거) 기준으로 더 이전에 판매된 사실 → 과거완료 수동 구조</span></div>
+        <div class="gram-item"><span class="g-name">◆ inquire about</span><span class="g-ex">inquired about the previous year's prices</span><span class="g-point">★ '~에 대해 문의하다' — ask about과 동의; 격식체</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">⑧ 문장 8</div>
+      <div class="sent-en">Considering that freshly squeezed lemonade usually costs more, we decided to sell each cup for $2.</div>
+      <div class="sent-slash">
+        <div class="slash-en">Considering that / freshly squeezed lemonade / usually costs more, / we decided to sell / each cup for $2.</div>
+        <div class="slash-ko">~을 고려하면 / 갓 짜낸 레모네이드가 / 보통 더 비싸다는 것을 / 우리는 판매하기로 결정했다 / 각 잔을 2달러에.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ Considering that ~ (분사구문)</span><span class="g-ex">Considering that freshly squeezed lemonade ~</span><span class="g-point">★ 독립분사구문; '~을 고려하면' = given that; 주절 주어와 달라도 사용 가능</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">⑨ 문장 9</div>
+      <div class="sent-en">Based on our recipe and the costs of the ingredients and cups, each cup of lemonade would cost us about $0.70 to make.</div>
+      <div class="sent-slash">
+        <div class="slash-en">Based on our recipe / and the costs of the ingredients and cups, / each cup of lemonade / would cost us / about $0.70 / to make.</div>
+        <div class="slash-ko">우리의 레시피와 / 재료 및 컵 비용에 기반하면 / 레모네이드 한 잔은 / 우리에게 비용이 들 것이었다 / 약 0.70달러가 / 만드는 데.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ cost + 사람 + 금액 (4형식)</span><span class="g-ex">would cost us about $0.70</span><span class="g-point">★ cost는 간접목적어에 전치사 없이 사용; cost + 목적어 + 금액</span></div>
+        <div class="gram-item"><span class="g-name">◆ Based on ~ (분사구문)</span><span class="g-ex">Based on our recipe and the costs</span><span class="g-point">★ 과거분사로 시작하는 분사구문 → 수동 의미 '~에 기반하여'</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">⑩ 문장 10</div>
+      <div class="sent-en">Regarding attendance, we learned that the festival organizers were expecting around 400 people for each of the two days of the festival.</div>
+      <div class="sent-slash">
+        <div class="slash-en">Regarding attendance, / we learned / that the festival organizers / were expecting / around 400 people / for each of the two days.</div>
+        <div class="slash-ko">참석 인원과 관련하여 / 우리는 알게 되었다 / 축제 주최자들이 / 예상하고 있었다는 것을 / 약 400명을 / 축제 이틀 각각에 대해.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ Regarding ~ (전치사)</span><span class="g-ex">Regarding attendance</span><span class="g-point">★ '~에 관하여' = concerning/as for; 문두에서 화제 전환 역할</span></div>
+        <div class="gram-item"><span class="g-name">◆ each of + 복수 명사</span><span class="g-ex">each of the two days</span><span class="g-point">★ each of + the + 복수 명사 → 단수 취급; each day와 동의</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">⑪ 문장 11</div>
+      <div class="sent-en">We thought we could reasonably sell lemonade to half of the people attending, so we aimed to sell 400 cups over the two days.</div>
+      <div class="sent-slash">
+        <div class="slash-en">We thought / we could reasonably sell lemonade / to half of the people attending, / so we aimed / to sell 400 cups / over the two days.</div>
+        <div class="slash-ko">우리는 생각했다 / 합리적으로 레모네이드를 팔 수 있다고 / 참석자의 절반에게 / 그래서 우리는 목표로 했다 / 400잔을 파는 것을 / 이틀에 걸쳐.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ aim to + 동사원형</span><span class="g-ex">aimed to sell 400 cups</span><span class="g-point">★ '~하는 것을 목표로 하다' — aim at v-ing과 구별; to부정사 목적어</span></div>
+        <div class="gram-item"><span class="g-name">◆ 현재분사 후치수식</span><span class="g-ex">the people attending</span><span class="g-point">★ people (who were) attending; 현재분사가 명사를 뒤에서 수식</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">⑫ 문장 12</div>
+      <div class="sent-en">If we could do that, our revenue would amount to $800!</div>
+      <div class="sent-slash">
+        <div class="slash-en">If we could do that, / our revenue / would amount to $800!</div>
+        <div class="slash-ko">만약 그렇게 할 수 있다면 / 우리의 수익은 / 800달러에 달할 것이다!</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ amount to (합계가 ~에 달하다)</span><span class="g-ex">would amount to $800</span><span class="g-point">★ '합계가 ~이 되다, ~에 달하다' — add up to와 동의; 수능 어휘 빈출</span></div>
+        <div class="gram-item"><span class="g-name">◆ 가정법 과거 (if + 과거, would)</span><span class="g-ex">If we could do that, ~ would amount to</span><span class="g-point">★ 현재 사실에 반하는 가정 또는 불확실한 미래 조건 표현</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">⑬ 문장 13</div>
+      <div class="sent-en">However, this revenue wouldn't be pure profit.</div>
+      <div class="sent-slash">
+        <div class="slash-en">However, / this revenue / wouldn't be pure profit.</div>
+        <div class="slash-ko">하지만 / 이 수익이 / 순수한 이익은 아닐 것이다.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ 역접 접속부사 however</span><span class="g-ex">However, this revenue ~</span><span class="g-point">★ 앞 내용(낙관적 수익)과 대조; 문두 however 뒤 콤마 필수</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">⑭ 문장 14</div>
+      <div class="sent-en">We needed to subtract our costs from it.</div>
+      <div class="sent-slash">
+        <div class="slash-en">We needed to subtract / our costs / from it.</div>
+        <div class="slash-ko">우리는 빼야 했다 / 우리의 비용을 / 그것에서.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ subtract A from B</span><span class="g-ex">subtract our costs from it</span><span class="g-point">★ 'B에서 A를 빼다' → Profit = Revenue - Costs 공식과 연결</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">⑮ 문장 15</div>
+      <div class="sent-en">In addition to the cost of $280 required to make 400 cups, we also had to factor in the $6 we needed for posters and fliers.</div>
+      <div class="sent-slash">
+        <div class="slash-en">In addition to the cost of $280 / required to make 400 cups, / we also had to factor in / the $6 / we needed / for posters and fliers.</div>
+        <div class="slash-ko">280달러의 비용 외에도 / 400잔을 만드는 데 필요한 / 우리는 또한 고려해야 했다 / 6달러를 / 우리가 필요한 / 포스터와 전단지를 위해.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ in addition to + 명사구</span><span class="g-ex">In addition to the cost of $280</span><span class="g-point">★ '~ 외에도' — besides와 동의; 전치사이므로 뒤에 명사/동명사</span></div>
+        <div class="gram-item"><span class="g-name">◆ factor in (고려하다)</span><span class="g-ex">had to factor in the $6</span><span class="g-point">★ '~을 (계산에) 포함시키다, 고려하다' — take into account와 유사</span></div>
+        <div class="gram-item"><span class="g-name">◆ 과거분사 후치수식</span><span class="g-ex">the cost of $280 required to make</span><span class="g-point">★ required(= that was required) → 과거분사가 명사 뒤에서 수식</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">⑯ 문장 16</div>
+      <div class="sent-en">If we reached our goal, we would be able to make $514 in profit.</div>
+      <div class="sent-slash">
+        <div class="slash-en">If we reached our goal, / we would be able to make / $514 in profit.</div>
+        <div class="slash-ko">만약 우리가 목표에 도달한다면 / 우리는 만들 수 있을 것이다 / 514달러의 이익을.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ 조건 부사절 if (현재→미래)</span><span class="g-ex">If we reached our goal</span><span class="g-point">★ 문맥상 미래 가능성 조건; would와 함께 불확실한 기대 표현</span></div>
+        <div class="gram-item"><span class="g-name">◆ make + 금액 (이익을 내다)</span><span class="g-ex">make $514 in profit</span><span class="g-point">★ make + 숫자 = '~만큼 벌다/이익 내다' — earn과 유사</span></div>
+      </div>
+    </div>
+
+  </div><!-- /문장분석 -->
+
+  <!-- 핵심단어 -->
+  <div class="tab-content" id="ch1-t2">
+    <div class="sec-title"><span class="num">3</span> 핵심단어 및 표현</div>
+    <div class="vocab-item"><span class="vocab-word">profit</span><span class="vocab-meaning">이익, 수익</span><span class="vocab-pos">n./v.</span><span class="vocab-deriv">profitable (adj.), profitability (n.)</span></div>
+    <div class="vocab-item"><span class="vocab-word">revenue</span><span class="vocab-meaning">수익, 매출</span><span class="vocab-pos">n.</span><span class="vocab-deriv">—</span></div>
+    <div class="vocab-item"><span class="vocab-word">maximize</span><span class="vocab-meaning">극대화하다</span><span class="vocab-pos">v.</span><span class="vocab-deriv">maximum (n./adj.), maximization (n.)</span></div>
+    <div class="vocab-item"><span class="vocab-word">minimize</span><span class="vocab-meaning">최소화하다</span><span class="vocab-pos">v.</span><span class="vocab-deriv">minimum (n./adj.), minimization (n.)</span></div>
+    <div class="vocab-item"><span class="vocab-word">affordable</span><span class="vocab-meaning">저렴한, 알맞은 가격의</span><span class="vocab-pos">adj.</span><span class="vocab-deriv">afford (v.), affordability (n.)</span></div>
+    <div class="vocab-item"><span class="vocab-word">in bulk</span><span class="vocab-meaning">대량으로</span><span class="vocab-pos">phr.</span><span class="vocab-deriv">bulk (n./adj.)</span></div>
+    <div class="vocab-item"><span class="vocab-word">inquire about</span><span class="vocab-meaning">~에 대해 문의하다</span><span class="vocab-pos">phr.</span><span class="vocab-deriv">inquiry (n.)</span></div>
+    <div class="vocab-item"><span class="vocab-word">amount to</span><span class="vocab-meaning">합계가 ~에 달하다</span><span class="vocab-pos">phr.</span><span class="vocab-deriv">amount (n.)</span></div>
+    <div class="vocab-item"><span class="vocab-word">subtract A from B</span><span class="vocab-meaning">B에서 A를 빼다</span><span class="vocab-pos">phr.</span><span class="vocab-deriv">subtraction (n.)</span></div>
+    <div class="vocab-item"><span class="vocab-word">factor in</span><span class="vocab-meaning">~을 고려하다, 포함시키다</span><span class="vocab-pos">phr.</span><span class="vocab-deriv">factor (n.)</span></div>
+    <div class="vocab-item"><span class="vocab-word">reasonable</span><span class="vocab-meaning">합리적인, 적당한</span><span class="vocab-pos">adj.</span><span class="vocab-deriv">reason (n.), reasonably (adv.)</span></div>
+  </div>
+
+  <!-- 전문해석 -->
+  <div class="tab-content" id="ch1-t3">
+    <div class="sec-title"><span class="num">4</span> 전문해석</div>
+    <div class="trans-box">
+      <p>레모네이드 가판대를 운영하는 주된 목표는 지역 아동원에 기부할 수 있을 만큼 충분한 이익을 내는 것이었습니다. 이익을 극대화하기 위해서는 비용을 줄이고 수익을 늘려야 했습니다.</p>
+      <p>비용을 최소화하고 싶었기 때문에, 첫 번째 단계는 구할 수 있는 가장 저렴한 재료와 컵을 찾는 것이었습니다. 가격을 조사하면서, 재료와 컵을 대량으로 구매하는 것이 가장 현명한 방법이라는 것을 알게 되었습니다.</p>
+      <p>비용을 최소화하는 방법을 알아냈으므로, 이제 레모네이드 한 잔에 대한 합리적인 가격을 결정해야 했습니다. 정보를 모으기 위해 축제 주최자에게 연락했습니다. 먼저 전년도 음료 가격을 문의했는데, 청량음료가 한 잔에 1.50달러에 판매되었다고 알려주었습니다. 갓 짜낸 레모네이드는 보통 더 비싸다는 점을 고려하여, 한 잔에 2달러에 팔기로 결정했습니다. 레시피와 재료 및 컵 비용에 근거하면, 레모네이드 한 잔을 만드는 데 약 0.70달러가 들 것이었습니다. 판매가 2달러로 잔당 1.30달러의 이익을 기대했습니다.</p>
+      <p>참석 인원에 관해서는, 축제 주최자들이 이틀 각각에 약 400명이 올 것으로 예상하고 있다는 것을 알게 되었습니다. 참석자의 절반에게 레모네이드를 팔 수 있다고 생각하여, 이틀 동안 400잔을 판매하는 것을 목표로 했습니다. 그렇게 된다면, 총 매출이 800달러에 달할 것이었습니다!</p>
+      <p>하지만 이 매출이 순수한 이익은 아닐 것이었습니다. 거기서 비용을 빼야 했습니다. 400잔을 만드는 데 필요한 280달러의 비용 외에도, 포스터와 전단지에 필요한 6달러도 고려해야 했습니다. 목표를 달성한다면, 514달러의 이익을 낼 수 있을 것이었습니다. 그것은 큰 기부가 될 것이었습니다!</p>
+    </div>
+  </div>
+
+  <!-- 주제·요지 -->
+  <div class="tab-content" id="ch1-t4">
+    <div class="sec-title"><span class="num">5</span> 주제·요지</div>
+    <div class="topic-card"><div class="tc-label">주제</div><div class="tc-content">레모네이드 가판대 운영을 위한 비용·수익·이익 계산 과정</div></div>
+    <div class="topic-card"><div class="tc-label">요지</div><div class="tc-content">최대 이익을 위해 대량 구매로 비용을 최소화하고, 경쟁 가격과 원가를 분석하여 합리적인 판매가($2)를 결정했으며, 참석 인원을 바탕으로 목표 판매량과 예상 순이익($514)을 산출했다.</div></div>
+    <div class="topic-card">
+      <div class="tc-label">구조 흐름</div>
+      <div class="tc-content">
+        <div class="flow-steps">
+          <div class="flow-step">비용 최소화<br><small>대량 구매 전략</small></div>
+          <div class="flow-step">판매가 결정<br><small>$2/잔 책정</small></div>
+          <div class="flow-step">매출 예측<br><small>400잔 × $2 = $800</small></div>
+          <div class="flow-step">순이익 계산<br><small>$800 − $286 = $514</small></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 변형문제 -->
+  <div class="tab-content" id="ch1-t5">
+    <div class="sec-title"><span class="num">6</span> 변형문제</div>
+
+    <div class="quiz-block" id="q1_1">
+      <div class="q-num">문항 1 · 주제 추론</div>
+      <div class="q-text">다음 글의 주제로 가장 적절한 것은?</div>
+      <div class="options">
+        <button class="opt-btn" onclick="checkAnswer('q1_1',this,false)">① 국제 음식 축제의 음료 판매 현황</button>
+        <button class="opt-btn" onclick="checkAnswer('q1_1',this,true)">② 레모네이드 가판대 운영을 위한 비용·수익 분석과 가격 결정 과정</button>
+        <button class="opt-btn" onclick="checkAnswer('q1_1',this,false)">③ 대량 구매가 소비자에게 미치는 경제적 이점</button>
+        <button class="opt-btn" onclick="checkAnswer('q1_1',this,false)">④ 축제 주최자와의 효과적인 커뮤니케이션 방법</button>
+        <button class="opt-btn" onclick="checkAnswer('q1_1',this,false)">⑤ 자선 기부를 위한 다양한 모금 방법</button>
+      </div>
+      <div class="q-result" id="q1_1_result"></div>
+      <div class="q-explain" id="q1_1_explain">이 섹션은 비용 최소화 → 가격 결정 → 수익 계산 → 순이익 산출의 흐름으로 구성되어 있으므로 ②가 정답.</div>
+      <button class="reset-btn" id="q1_1_reset" onclick="resetQuiz('q1_1')">↺ 다시 풀기</button>
+    </div>
+
+    <div class="quiz-block" id="q1_2">
+      <div class="q-num">문항 2 · 빈칸 추론</div>
+      <div class="q-text">As we were researching prices, we found that buying ingredients and cups <span class="blank">________________</span> would be the smartest way to go.</div>
+      <div class="options">
+        <button class="opt-btn" onclick="checkAnswer('q1_2',this,false)">① from local stores</button>
+        <button class="opt-btn" onclick="checkAnswer('q1_2',this,false)">② at the lowest quality</button>
+        <button class="opt-btn" onclick="checkAnswer('q1_2',this,true)">③ in bulk</button>
+        <button class="opt-btn" onclick="checkAnswer('q1_2',this,false)">④ on sale days</button>
+        <button class="opt-btn" onclick="checkAnswer('q1_2',this,false)">⑤ in small amounts</button>
+      </div>
+      <div class="q-result" id="q1_2_result"></div>
+      <div class="q-explain" id="q1_2_explain">비용 최소화 전략으로 본문은 "buying ~ in bulk(대량 구매)"를 직접 제시함. ③이 정답.</div>
+      <button class="reset-btn" id="q1_2_reset" onclick="resetQuiz('q1_2')">↺ 다시 풀기</button>
+    </div>
+
+    <div class="quiz-block" id="q1_3">
+      <div class="q-num">문항 3 · 어법 오류 찾기</div>
+      <div class="q-text">다음 밑줄 친 부분 중 어법상 틀린 것은?<br><br>
+      ①<u>To maximize</u> our profit, we needed to decrease our costs. We found that ②<u>buying</u> ingredients in bulk would be the smartest way to go. ③<u>Considering</u> that freshly squeezed lemonade usually costs more, we decided to sell each cup for $2. Each cup would cost us about $0.70 ④<u>to make</u>. In addition to the cost of $280 ⑤<u>requiring</u> to make 400 cups, we had to factor in $6 for posters.</div>
+      <div class="options">
+        <button class="opt-btn" onclick="checkAnswer('q1_3',this,false)">① To maximize</button>
+        <button class="opt-btn" onclick="checkAnswer('q1_3',this,false)">② buying</button>
+        <button class="opt-btn" onclick="checkAnswer('q1_3',this,false)">③ Considering</button>
+        <button class="opt-btn" onclick="checkAnswer('q1_3',this,false)">④ to make</button>
+        <button class="opt-btn" onclick="checkAnswer('q1_3',this,true)">⑤ requiring</button>
+      </div>
+      <div class="q-result" id="q1_3_result"></div>
+      <div class="q-explain" id="q1_3_explain">⑤ requiring → required. "the cost required to make 400 cups"에서 the cost는 '요구되는(수동)' 관계이므로 과거분사 required를 사용해야 함. requiring은 능동 의미라 오류.</div>
+      <button class="reset-btn" id="q1_3_reset" onclick="resetQuiz('q1_3')">↺ 다시 풀기</button>
+    </div>
+
+    <div class="quiz-block" id="q1_4">
+      <div class="q-num">문항 4 · 내용 불일치</div>
+      <div class="q-text">다음 글의 내용과 일치하지 않는 것은?</div>
+      <div class="options">
+        <button class="opt-btn" onclick="checkAnswer('q1_4',this,false)">① 전년도 축제에서 청량음료는 한 잔에 1.50달러에 판매되었다.</button>
+        <button class="opt-btn" onclick="checkAnswer('q1_4',this,false)">② 레모네이드 한 잔 원가는 약 0.70달러로 예상되었다.</button>
+        <button class="opt-btn" onclick="checkAnswer('q1_4',this,true)">③ 축제 주최자는 이틀 동안 총 400명의 방문객을 예상했다.</button>
+        <button class="opt-btn" onclick="checkAnswer('q1_4',this,false)">④ 목표 판매량인 400잔을 팔면 매출은 800달러가 된다.</button>
+        <button class="opt-btn" onclick="checkAnswer('q1_4',this,false)">⑤ 포스터와 전단지 비용으로 6달러가 추가 지출로 책정되었다.</button>
+      </div>
+      <div class="q-result" id="q1_4_result"></div>
+      <div class="q-explain" id="q1_4_explain">③은 틀린 내용. 본문은 "around 400 people for each of the two days"라고 하여 하루에 400명씩, 이틀 총 800명을 예상했음. 총 400명이 아님.</div>
+      <button class="reset-btn" id="q1_4_reset" onclick="resetQuiz('q1_4')">↺ 다시 풀기</button>
+    </div>
+
+    <div class="quiz-block" id="q1_5">
+      <div class="q-num">문항 5 · 서술형</div>
+      <div class="e-cond">조건: 아래 공식을 채우고, 본문의 수치를 이용하여 예상 순이익을 계산 과정과 함께 영어로 쓰시오.</div>
+      <div class="q-text" style="margin-top:10px;">
+        Profit = Revenue − Costs<br>
+        Revenue = <span class="blank">______</span> cups × $<span class="blank">__</span> = $<span class="blank">______</span><br>
+        Costs = $<span class="blank">______</span> (ingredients) + $<span class="blank">__</span> (promotion) = $<span class="blank">______</span><br>
+        Profit = $<span class="blank">______</span> − $<span class="blank">______</span> = $<span class="blank">______</span>
+      </div>
+      <textarea class="essay-textarea" style="min-height:100px;" placeholder="계산 과정과 답을 여기에 쓰세요..."></textarea>
+      <button class="show-ans-btn" onclick="toggleAnswer(this)">모범답안 보기</button>
+      <div class="model-answer">
+        <div class="ma-label">모범답안</div>
+        Revenue = 400 cups × $2 = <strong>$800</strong><br>
+        Costs = $280 (ingredients &amp; cups) + $6 (posters &amp; fliers) = <strong>$286</strong><br>
+        Profit = $800 − $286 = <strong>$514</strong>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /ch1 -->
+
+
+<!-- ===== SECTION 3: MARKETING ===== -->
+<div class="chapter-panel" id="ch2">
+  <div class="ch-header">
+    <div class="label">SECTION 3</div>
+    <h1>Marketing — Location &amp; Strategies</h1>
+    <div class="subtitle">마케팅</div>
+  </div>
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="showTab('ch2','t0')">📄 전문</button>
+    <button class="tab-btn" onclick="showTab('ch2','t1')">🔍 문장분석</button>
+    <button class="tab-btn" onclick="showTab('ch2','t2')">📚 핵심단어</button>
+    <button class="tab-btn" onclick="showTab('ch2','t3')">🇰🇷 전문해석</button>
+    <button class="tab-btn" onclick="showTab('ch2','t4')">💡 주제·요지</button>
+    <button class="tab-btn" onclick="showTab('ch2','t5')">✏️ 변형문제</button>
+  </div>
+
+  <!-- 전문 -->
+  <div class="tab-content active" id="ch2-t0">
+    <div class="sec-title"><span class="num">1</span> 전문</div>
+    <div class="fulltext-box">
+      <p><strong>Location-Based Marketing:</strong><br>
+      When the organizer asked us where we wanted our stand, we knew that location was going to be important. She sent us a map showing which foods were going to be sold at which stands, and we chose an opening between the tteokbokki and spicy kebab stands. Who could resist a cool, sweet lemonade after some spicy and salty food?</p>
+      <p><strong>Our Marketing Strategies:</strong><br>
+      Developing marketing strategies to attract more customers was the most enjoyable part. In addition to designing posters and fliers, we also explored various online marketing techniques. One of our club members suggested we offer customers free refills for mentioning our stand on their social media accounts. We all agreed that was a great way to spread the word. We also planned to install a photo zone and give coupons for a 10% discount to customers who posted photos they took there with the tag "#sweetsuccess," the name of our stand.</p>
+    </div>
+  </div>
+
+  <!-- 문장분석 -->
+  <div class="tab-content" id="ch2-t1">
+    <div class="sec-title"><span class="num">2</span> 문장분석</div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">① 문장 1</div>
+      <div class="sent-en">When the organizer asked us where we wanted our stand, we knew that location was going to be important.</div>
+      <div class="sent-slash">
+        <div class="slash-en">When the organizer asked us / where we wanted our stand, / we knew / that location / was going to be important.</div>
+        <div class="slash-ko">주최자가 우리에게 물었을 때 / 어디에 가판대를 원하는지를 / 우리는 알고 있었다 / 위치가 / 중요할 것이라는 것을.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ ask + 목적어 + 간접의문문</span><span class="g-ex">asked us where we wanted our stand</span><span class="g-point">★ 4형식 ask: ask + 사람 + 간접의문문; where + 주어 + 동사 어순</span></div>
+        <div class="gram-item"><span class="g-name">◆ be going to (예정·예측)</span><span class="g-ex">was going to be important</span><span class="g-point">★ '~할 예정이다, ~일 것이다' — will보다 확실성이 높은 미래 표현</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">② 문장 2</div>
+      <div class="sent-en">She sent us a map showing which foods were going to be sold at which stands, and we chose an opening between the tteokbokki and spicy kebab stands.</div>
+      <div class="sent-slash">
+        <div class="slash-en">She sent us a map / showing which foods / were going to be sold / at which stands, / and we chose an opening / between the tteokbokki / and spicy kebab stands.</div>
+        <div class="slash-ko">그녀는 우리에게 지도를 보냈다 / 어떤 음식들이 / 팔릴 예정인지 보여주는 / 어떤 가판대에서 / 그리고 우리는 자리를 골랐다 / 떡볶이와 / 매운 케밥 가판대 사이의.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ 현재분사 후치수식</span><span class="g-ex">a map showing which foods ~</span><span class="g-point">★ showing ~ = that showed ~; 현재분사구가 map을 뒤에서 능동 수식</span></div>
+        <div class="gram-item"><span class="g-name">◆ 간접의문문 (which ~ were sold at which ~)</span><span class="g-ex">which foods were going to be sold at which stands</span><span class="g-point">★ 이중 which 간접의문문; 어순 주의 (which + 명사 + 주어 + 동사)</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">③ 문장 3</div>
+      <div class="sent-en">Who could resist a cool, sweet lemonade after some spicy and salty food?</div>
+      <div class="sent-slash">
+        <div class="slash-en">Who could resist / a cool, sweet lemonade / after some spicy and salty food?</div>
+        <div class="slash-ko">누가 거부할 수 있겠는가 / 시원하고 달콤한 레모네이드를 / 매운 짠 음식 후에?</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ 수사 의문문 (Rhetorical question)</span><span class="g-ex">Who could resist ~?</span><span class="g-point">★ 의문문 형태이나 실제론 '아무도 거부 못할 것이다'를 강조; 부정적 의미 내포</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">④ 문장 4</div>
+      <div class="sent-en">Developing marketing strategies to attract more customers was the most enjoyable part.</div>
+      <div class="sent-slash">
+        <div class="slash-en">Developing marketing strategies / to attract more customers / was the most enjoyable part.</div>
+        <div class="slash-ko">마케팅 전략들을 개발하는 것이 / 더 많은 고객을 끌어들이기 위한 / 가장 즐거운 부분이었다.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ 동명사 주어</span><span class="g-ex">Developing marketing strategies ~ was</span><span class="g-point">★ 동명사구 주어 → 단수 동사(was); It ~ to develop ... 으로 바꿔쓰기 가능</span></div>
+        <div class="gram-item"><span class="g-name">◆ 최상급</span><span class="g-ex">the most enjoyable part</span><span class="g-point">★ 3음절 이상 형용사 최상급 → most + 형용사; enjoyable(3음절) = most enjoyable</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">⑤ 문장 5</div>
+      <div class="sent-en">In addition to designing posters and fliers, we also explored various online marketing techniques.</div>
+      <div class="sent-slash">
+        <div class="slash-en">In addition to designing / posters and fliers, / we also explored / various online marketing techniques.</div>
+        <div class="slash-ko">포스터와 전단지를 디자인하는 것 외에도 / 우리는 또한 탐색했다 / 다양한 온라인 마케팅 기법들을.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ In addition to + 동명사</span><span class="g-ex">In addition to designing posters</span><span class="g-point">★ '~ 외에도' — 전치사이므로 뒤에 동명사 필수 (designing ≠ design)</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">⑥ 문장 6</div>
+      <div class="sent-en">One of our club members suggested we offer customers free refills for mentioning our stand on their social media accounts.</div>
+      <div class="sent-slash">
+        <div class="slash-en">One of our club members / suggested / we offer customers / free refills / for mentioning our stand / on their social media accounts.</div>
+        <div class="slash-ko">우리 동아리 원 중 한 명이 / 제안했다 / 우리가 고객들에게 제공하자고 / 무료 리필을 / 우리 가판대를 언급하는 것에 대해 / 그들의 소셜 미디어 계정에.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ suggest + (that) + 주어 + 동사원형</span><span class="g-ex">suggested we offer customers free refills</span><span class="g-point">★ suggest/recommend/insist 등 제안·주장 동사 뒤 that절은 (should +) 동사원형; should 생략 가능</span></div>
+        <div class="gram-item"><span class="g-name">◆ one of + 복수 명사</span><span class="g-ex">One of our club members suggested</span><span class="g-point">★ one of + 복수 명사 → 주어는 one(단수) → 단수 동사</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">⑦ 문장 7</div>
+      <div class="sent-en">We all agreed that was a great way to spread the word.</div>
+      <div class="sent-slash">
+        <div class="slash-en">We all agreed / that was / a great way / to spread the word.</div>
+        <div class="slash-ko">우리 모두 동의했다 / 그것이 / 훌륭한 방법이라고 / 소문을 퍼뜨리는.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ spread the word (관용 표현)</span><span class="g-ex">a great way to spread the word</span><span class="g-point">★ '소문을 퍼뜨리다, 알리다' — 마케팅·홍보 맥락 핵심 표현</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">⑧ 문장 8</div>
+      <div class="sent-en">We also planned to install a photo zone and give coupons for a 10% discount to customers who posted photos they took there with the tag "#sweetsuccess," the name of our stand.</div>
+      <div class="sent-slash">
+        <div class="slash-en">We also planned / to install a photo zone / and give coupons / for a 10% discount / to customers / who posted photos / they took there / with the tag "#sweetsuccess," / the name of our stand.</div>
+        <div class="slash-ko">우리는 또한 계획했다 / 포토존을 설치하고 / 쿠폰을 주는 것을 / 10% 할인의 / 고객들에게 / 사진을 게시한 / 그들이 그곳에서 찍은 / "#sweetsuccess"라는 태그와 함께 / 우리 가판대의 이름인.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ 관계대명사 who (주격)</span><span class="g-ex">customers who posted photos</span><span class="g-point">★ 선행사(customers) 수식; 주격 관계대명사 who 생략 불가</span></div>
+        <div class="gram-item"><span class="g-name">◆ 관계대명사 목적격 생략</span><span class="g-ex">photos (that) they took there</span><span class="g-point">★ 목적격 관계대명사 that 생략; photos가 took의 목적어</span></div>
+        <div class="gram-item"><span class="g-name">◆ 동격 표현</span><span class="g-ex">"#sweetsuccess," the name of our stand</span><span class="g-point">★ 콤마(,) 뒤 명사구가 앞 단어를 설명하는 동격</span></div>
+      </div>
+    </div>
+
+  </div><!-- /문장분석 -->
+
+  <!-- 핵심단어 -->
+  <div class="tab-content" id="ch2-t2">
+    <div class="sec-title"><span class="num">3</span> 핵심단어 및 표현</div>
+    <div class="vocab-item"><span class="vocab-word">location</span><span class="vocab-meaning">위치, 장소</span><span class="vocab-pos">n.</span><span class="vocab-deriv">locate (v.), local (adj.)</span></div>
+    <div class="vocab-item"><span class="vocab-word">opening</span><span class="vocab-meaning">빈 자리, 공간</span><span class="vocab-pos">n.</span><span class="vocab-deriv">open (v./adj.)</span></div>
+    <div class="vocab-item"><span class="vocab-word">resist</span><span class="vocab-meaning">저항하다, 거부하다</span><span class="vocab-pos">v.</span><span class="vocab-deriv">resistance (n.), resistant (adj.)</span></div>
+    <div class="vocab-item"><span class="vocab-word">explore</span><span class="vocab-meaning">탐색하다, 탐구하다</span><span class="vocab-pos">v.</span><span class="vocab-deriv">exploration (n.), explorer (n.)</span></div>
+    <div class="vocab-item"><span class="vocab-word">suggest</span><span class="vocab-meaning">제안하다</span><span class="vocab-pos">v.</span><span class="vocab-deriv">suggestion (n.), suggestive (adj.)</span></div>
+    <div class="vocab-item"><span class="vocab-word">refill</span><span class="vocab-meaning">리필, 재충전</span><span class="vocab-pos">n./v.</span><span class="vocab-deriv">fill (v.)</span></div>
+    <div class="vocab-item"><span class="vocab-word">spread the word</span><span class="vocab-meaning">소문을 퍼뜨리다, 알리다</span><span class="vocab-pos">phr.</span><span class="vocab-deriv">spread (v.)</span></div>
+    <div class="vocab-item"><span class="vocab-word">install</span><span class="vocab-meaning">설치하다</span><span class="vocab-pos">v.</span><span class="vocab-deriv">installation (n.)</span></div>
+    <div class="vocab-item"><span class="vocab-word">coupon</span><span class="vocab-meaning">쿠폰, 할인권</span><span class="vocab-pos">n.</span><span class="vocab-deriv">—</span></div>
+    <div class="vocab-item"><span class="vocab-word">attract</span><span class="vocab-meaning">끌어들이다, 유혹하다</span><span class="vocab-pos">v.</span><span class="vocab-deriv">attraction (n.), attractive (adj.)</span></div>
+  </div>
+
+  <!-- 전문해석 -->
+  <div class="tab-content" id="ch2-t3">
+    <div class="sec-title"><span class="num">4</span> 전문해석</div>
+    <div class="trans-box">
+      <p><strong>위치 기반 마케팅:</strong><br>
+      주최자가 가판대 위치를 어디에 원하는지 물었을 때, 우리는 위치가 중요할 것임을 알고 있었습니다. 그녀는 어떤 가판대에서 어떤 음식이 팔릴지 보여주는 지도를 보내줬고, 우리는 떡볶이와 매운 케밥 가판대 사이의 빈 자리를 선택했습니다. 매콤하고 짠 음식을 먹은 후에 시원하고 달콤한 레모네이드를 거부할 수 있는 사람이 누가 있겠어요?</p>
+      <p><strong>우리의 마케팅 전략:</strong><br>
+      더 많은 고객을 끌어들이기 위한 마케팅 전략을 개발하는 것이 가장 즐거운 부분이었습니다. 포스터와 전단지를 디자인하는 것 외에도, 다양한 온라인 마케팅 기법도 탐색했습니다. 동아리 회원 한 명이 소셜 미디어 계정에 우리 가판대를 언급하는 고객에게 무료 리필을 제공하자고 제안했습니다. 우리 모두 그것이 소문을 퍼뜨리는 훌륭한 방법이라는 데 동의했습니다. 또한 포토존을 설치하고, 우리 가판대 이름인 "#sweetsuccess" 태그와 함께 그곳에서 찍은 사진을 게시한 고객에게 10% 할인 쿠폰을 주는 것도 계획했습니다.</p>
+    </div>
+  </div>
+
+  <!-- 주제·요지 -->
+  <div class="tab-content" id="ch2-t4">
+    <div class="sec-title"><span class="num">5</span> 주제·요지</div>
+    <div class="topic-card"><div class="tc-label">주제</div><div class="tc-content">레모네이드 가판대를 위한 위치 선정과 다양한 마케팅 전략의 수립</div></div>
+    <div class="topic-card"><div class="tc-label">요지</div><div class="tc-content">매운 음식 가판대 사이라는 전략적 위치를 선택하고, SNS 언급 시 무료 리필, 포토존 및 할인 쿠폰 등 창의적인 온·오프라인 마케팅 전략을 수립하여 고객 유치를 극대화하고자 했다.</div></div>
+    <div class="topic-card">
+      <div class="tc-label">구조 흐름</div>
+      <div class="tc-content">
+        <div class="flow-steps">
+          <div class="flow-step">위치 선정<br><small>매운 음식 사이 전략</small></div>
+          <div class="flow-step">오프라인 홍보<br><small>포스터·전단지</small></div>
+          <div class="flow-step">SNS 마케팅<br><small>무료 리필 제공</small></div>
+          <div class="flow-step">포토존 + 쿠폰<br><small>#sweetsuccess</small></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 변형문제 -->
+  <div class="tab-content" id="ch2-t5">
+    <div class="sec-title"><span class="num">6</span> 변형문제</div>
+
+    <div class="quiz-block" id="q2_1">
+      <div class="q-num">문항 1 · 주제 추론</div>
+      <div class="q-text">다음 글의 주제로 가장 적절한 것은?</div>
+      <div class="options">
+        <button class="opt-btn" onclick="checkAnswer('q2_1',this,false)">① 소셜 미디어를 활용한 현대 기업의 마케팅 동향</button>
+        <button class="opt-btn" onclick="checkAnswer('q2_1',this,true)">② 레모네이드 가판대 운영을 위한 위치 선정과 창의적 마케팅 전략</button>
+        <button class="opt-btn" onclick="checkAnswer('q2_1',this,false)">③ 음식 축제에서 인기 있는 음식 배치 방법</button>
+        <button class="opt-btn" onclick="checkAnswer('q2_1',this,false)">④ 고객 서비스 향상을 위한 포토존의 중요성</button>
+        <button class="opt-btn" onclick="checkAnswer('q2_1',this,false)">⑤ 무료 리필 서비스가 매출에 미치는 영향</button>
+      </div>
+      <div class="q-result" id="q2_1_result"></div>
+      <div class="q-explain" id="q2_1_explain">이 섹션은 위치 선정(매운 음식 사이) + SNS 무료 리필 + 포토존 쿠폰 등의 마케팅 전략 전반을 다루므로 ②가 정답.</div>
+      <button class="reset-btn" id="q2_1_reset" onclick="resetQuiz('q2_1')">↺ 다시 풀기</button>
+    </div>
+
+    <div class="quiz-block" id="q2_2">
+      <div class="q-num">문항 2 · 빈칸 추론</div>
+      <div class="q-text">One of our club members suggested we offer customers free refills for <span class="blank">________________</span> on their social media accounts.</div>
+      <div class="options">
+        <button class="opt-btn" onclick="checkAnswer('q2_2',this,false)">① taking a photo</button>
+        <button class="opt-btn" onclick="checkAnswer('q2_2',this,false)">② leaving a review</button>
+        <button class="opt-btn" onclick="checkAnswer('q2_2',this,true)">③ mentioning our stand</button>
+        <button class="opt-btn" onclick="checkAnswer('q2_2',this,false)">④ sharing a discount code</button>
+        <button class="opt-btn" onclick="checkAnswer('q2_2',this,false)">⑤ tagging their friends</button>
+      </div>
+      <div class="q-result" id="q2_2_result"></div>
+      <div class="q-explain" id="q2_2_explain">본문에서 "free refills for mentioning our stand on their social media accounts"라고 직접 서술. ③이 정답.</div>
+      <button class="reset-btn" id="q2_2_reset" onclick="resetQuiz('q2_2')">↺ 다시 풀기</button>
+    </div>
+
+    <div class="quiz-block" id="q2_3">
+      <div class="q-num">문항 3 · 어법 오류 찾기</div>
+      <div class="q-text">다음 밑줄 친 부분 중 어법상 틀린 것은?<br><br>
+      ①<u>Developing</u> marketing strategies to attract more customers was the most enjoyable part. In addition to ②<u>designing</u> posters and fliers, we also explored various online marketing techniques. One of our club members suggested we ③<u>offer</u> customers free refills for ④<u>mentioning</u> our stand on their social media. We also planned to give coupons to customers ⑤<u>whom</u> posted photos with the tag "#sweetsuccess."</div>
+      <div class="options">
+        <button class="opt-btn" onclick="checkAnswer('q2_3',this,false)">① Developing</button>
+        <button class="opt-btn" onclick="checkAnswer('q2_3',this,false)">② designing</button>
+        <button class="opt-btn" onclick="checkAnswer('q2_3',this,false)">③ offer</button>
+        <button class="opt-btn" onclick="checkAnswer('q2_3',this,false)">④ mentioning</button>
+        <button class="opt-btn" onclick="checkAnswer('q2_3',this,true)">⑤ whom</button>
+      </div>
+      <div class="q-result" id="q2_3_result"></div>
+      <div class="q-explain" id="q2_3_explain">⑤ whom → who. 뒤에 동사(posted)가 이어지므로 주격 관계대명사 who를 사용해야 함. whom은 목적격이므로 오류.</div>
+      <button class="reset-btn" id="q2_3_reset" onclick="resetQuiz('q2_3')">↺ 다시 풀기</button>
+    </div>
+
+    <div class="quiz-block" id="q2_4">
+      <div class="q-num">문항 4 · 내용 불일치</div>
+      <div class="q-text">다음 글의 내용과 일치하지 않는 것은?</div>
+      <div class="options">
+        <button class="opt-btn" onclick="checkAnswer('q2_4',this,false)">① 가판대 위치는 떡볶이와 매운 케밥 가판대 사이였다.</button>
+        <button class="opt-btn" onclick="checkAnswer('q2_4',this,false)">② 포스터와 전단지 제작 외에 온라인 마케팅도 활용했다.</button>
+        <button class="opt-btn" onclick="checkAnswer('q2_4',this,true)">③ 소셜 미디어에 사진을 올린 고객에게 무료 리필을 제공했다.</button>
+        <button class="opt-btn" onclick="checkAnswer('q2_4',this,false)">④ "#sweetsuccess"는 가판대의 이름이었다.</button>
+        <button class="opt-btn" onclick="checkAnswer('q2_4',this,false)">⑤ 포토존에서 사진을 찍고 특정 태그를 단 고객에게 할인 쿠폰을 주었다.</button>
+      </div>
+      <div class="q-result" id="q2_4_result"></div>
+      <div class="q-explain" id="q2_4_explain">③은 틀린 내용. 무료 리필은 소셜 미디어에 '사진을 올린' 고객이 아니라 '가판대를 언급(mentioning)한' 고객에게 제공했음. 사진+태그 게시 고객에게는 할인 쿠폰을 제공했음.</div>
+      <button class="reset-btn" id="q2_4_reset" onclick="resetQuiz('q2_4')">↺ 다시 풀기</button>
+    </div>
+
+    <div class="quiz-block" id="q2_5">
+      <div class="q-num">문항 5 · 서술형</div>
+      <div class="e-cond">조건: 본문의 내용을 바탕으로, 두 가지 SNS 마케팅 전략을 각각 한 문장의 한국어로 설명하고, 각각의 고객 혜택도 함께 쓰시오.</div>
+      <textarea class="essay-textarea" style="min-height:110px;" placeholder="전략 1 (혜택 포함):&#10;전략 2 (혜택 포함):"></textarea>
+      <button class="show-ans-btn" onclick="toggleAnswer(this)">모범답안 보기</button>
+      <div class="model-answer">
+        <div class="ma-label">모범답안</div>
+        <strong>전략 1:</strong> 소셜 미디어 계정에 가판대를 언급하는 고객에게 <strong>무료 리필(free refills)</strong>을 제공하는 전략이다.<br>
+        <strong>전략 2:</strong> 포토존에서 찍은 사진을 "#sweetsuccess" 태그와 함께 게시한 고객에게 <strong>10% 할인 쿠폰</strong>을 제공하는 전략이다.
+      </div>
+    </div>
+
+  </div>
+</div><!-- /ch2 -->
+
+
+<!-- ===== SECTION 4: THE RESULTS ===== -->
+<div class="chapter-panel" id="ch3">
+  <div class="ch-header">
+    <div class="label">SECTION 4</div>
+    <h1>The Results — Mission Completed!</h1>
+    <div class="subtitle">결과</div>
+  </div>
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="showTab('ch3','t0')">📄 전문</button>
+    <button class="tab-btn" onclick="showTab('ch3','t1')">🔍 문장분석</button>
+    <button class="tab-btn" onclick="showTab('ch3','t2')">📚 핵심단어</button>
+    <button class="tab-btn" onclick="showTab('ch3','t3')">🇰🇷 전문해석</button>
+    <button class="tab-btn" onclick="showTab('ch3','t4')">💡 주제·요지</button>
+    <button class="tab-btn" onclick="showTab('ch3','t5')">✏️ 변형문제</button>
+  </div>
+
+  <!-- 전문 -->
+  <div class="tab-content active" id="ch3-t0">
+    <div class="sec-title"><span class="num">1</span> 전문</div>
+    <div class="fulltext-box">
+      <p>Mission completed! Our lemonade stand was a huge success! Because of the hot weather, we ended up purchasing extra bags of ice. We also had to give free refills and discounts to some customers, which we did as part of our marketing strategy. Even with these extra costs, however, we were still able to make a profit of $479. Even though we couldn't reach our profit goal, we were happy that we were able to make a big donation to the children's home. We also learned a valuable lesson in economics, a lesson we never could have learned in the classroom!</p>
+    </div>
+    <div class="info-box">
+      <div class="ib-title">📊 실제 결과 vs 예상</div>
+      예상 이익: <span class="num-highlight">$514</span> → 실제 이익: <span class="num-highlight">$479</span><br>
+      추가 지출: 여분 얼음 + 무료 리필 + 할인 쿠폰 비용<br>
+      결과: 목표 미달성, 그러나 아동원에 <span class="num-highlight">큰 기부</span> 성공 🎉
+    </div>
+  </div>
+
+  <!-- 문장분석 -->
+  <div class="tab-content" id="ch3-t1">
+    <div class="sec-title"><span class="num">2</span> 문장분석</div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">① 문장 1</div>
+      <div class="sent-en">Mission completed! Our lemonade stand was a huge success!</div>
+      <div class="sent-slash">
+        <div class="slash-en">Mission completed! / Our lemonade stand / was a huge success!</div>
+        <div class="slash-ko">임무 완료! / 우리의 레모네이드 가판대는 / 엄청난 성공이었다!</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ 독립 분사구문 (감탄 표현)</span><span class="g-ex">Mission completed!</span><span class="g-point">★ Mission (has been) completed의 생략 형태; 군사·업무 상황의 관용 표현</span></div>
+        <div class="gram-item"><span class="g-name">◆ a huge success (명사 보어)</span><span class="g-ex">was a huge success</span><span class="g-point">★ 2형식; 형용사 대신 명사 보어 사용 → 강조 효과</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">② 문장 2</div>
+      <div class="sent-en">Because of the hot weather, we ended up purchasing extra bags of ice.</div>
+      <div class="sent-slash">
+        <div class="slash-en">Because of the hot weather, / we ended up / purchasing extra bags of ice.</div>
+        <div class="slash-ko">더운 날씨 때문에 / 우리는 결국 / 여분의 얼음 봉지를 구매하게 되었다.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ end up + v-ing</span><span class="g-ex">ended up purchasing extra bags of ice</span><span class="g-point">★ '결국 ~하게 되다' — 예상치 못한 결과 강조; 동명사만 가능 (to부정사 불가)</span></div>
+        <div class="gram-item"><span class="g-name">◆ because of + 명사구</span><span class="g-ex">Because of the hot weather</span><span class="g-point">★ 전치사구이므로 뒤에 명사/명사구; because + 절과 구별</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">③ 문장 3</div>
+      <div class="sent-en">We also had to give free refills and discounts to some customers, which we did as part of our marketing strategy.</div>
+      <div class="sent-slash">
+        <div class="slash-en">We also had to give / free refills and discounts / to some customers, / which we did / as part of our marketing strategy.</div>
+        <div class="slash-ko">우리는 또한 제공해야 했다 / 무료 리필과 할인을 / 일부 고객들에게 / 그것은 우리가 한 것이었다 / 마케팅 전략의 일부로.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ 계속적 용법 which (앞 절 전체 수식)</span><span class="g-ex">, which we did as part of ~</span><span class="g-point">★ which = and this; 앞 절 전체(무료 리필·할인 제공)를 선행사로 받음</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">④ 문장 4</div>
+      <div class="sent-en">Even with these extra costs, however, we were still able to make a profit of $479.</div>
+      <div class="sent-slash">
+        <div class="slash-en">Even with these extra costs, however, / we were still able / to make a profit / of $479.</div>
+        <div class="slash-ko">이러한 추가 비용에도 불구하고, 하지만 / 우리는 여전히 할 수 있었다 / 이익을 내는 것을 / 479달러의.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ even with (양보 전치사구)</span><span class="g-ex">Even with these extra costs</span><span class="g-point">★ '~에도 불구하고' = despite/in spite of; even though + 절과 구별</span></div>
+        <div class="gram-item"><span class="g-name">◆ be able to (과거 성공)</span><span class="g-ex">were still able to make a profit</span><span class="g-point">★ 실제로 성공한 과거 상황 → could보다 be able to 선호; 수능 구별 포인트</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">⑤ 문장 5</div>
+      <div class="sent-en">Even though we couldn't reach our profit goal, we were happy that we were able to make a big donation to the children's home.</div>
+      <div class="sent-slash">
+        <div class="slash-en">Even though / we couldn't reach our profit goal, / we were happy / that we were able / to make a big donation / to the children's home.</div>
+        <div class="slash-ko">비록 / 이익 목표에 도달하지 못했지만 / 우리는 행복했다 / 우리가 할 수 있었다는 것에 / 큰 기부를 하는 것을 / 아동원에.</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ even though (사실적 양보)</span><span class="g-ex">Even though we couldn't reach ~</span><span class="g-point">★ '비록 ~이지만' — 실제 사실에 대한 양보; even if(가정적 양보)와 구별</span></div>
+        <div class="gram-item"><span class="g-name">◆ be happy that + 절</span><span class="g-ex">we were happy that we were able to ~</span><span class="g-point">★ 감정 형용사 + that절; 이때 that은 접속사(생략 가능)</span></div>
+      </div>
+    </div>
+
+    <div class="sent-block">
+      <div class="sent-num-row">⑥ 문장 6</div>
+      <div class="sent-en">We also learned a valuable lesson in economics, a lesson we never could have learned in the classroom!</div>
+      <div class="sent-slash">
+        <div class="slash-en">We also learned / a valuable lesson in economics, / a lesson / we never could have learned / in the classroom!</div>
+        <div class="slash-ko">우리는 또한 배웠다 / 경제학에서 귀중한 교훈을 / 하나의 교훈을 / 우리가 절대 배울 수 없었던 / 교실에서!</div>
+      </div>
+      <div class="gram-list">
+        <div class="gram-item"><span class="g-name">◆ 동격 명사구</span><span class="g-ex">a valuable lesson in economics, a lesson ~</span><span class="g-point">★ 콤마 뒤 a lesson이 앞 a valuable lesson을 동격으로 재서술</span></div>
+        <div class="gram-item"><span class="g-name">◆ 조동사 + have + p.p. (과거 추측·불가)</span><span class="g-ex">never could have learned</span><span class="g-point">★ could have p.p. = 과거에 가능했을 일; never could have = '절대 할 수 없었을 것이다'</span></div>
+      </div>
+    </div>
+
+  </div><!-- /문장분석 -->
+
+  <!-- 핵심단어 -->
+  <div class="tab-content" id="ch3-t2">
+    <div class="sec-title"><span class="num">3</span> 핵심단어 및 표현</div>
+    <div class="vocab-item"><span class="vocab-word">end up v-ing</span><span class="vocab-meaning">결국 ~하게 되다</span><span class="vocab-pos">phr.</span><span class="vocab-deriv">end (v./n.)</span></div>
+    <div class="vocab-item"><span class="vocab-word">extra</span><span class="vocab-meaning">여분의, 추가의</span><span class="vocab-pos">adj./adv.</span><span class="vocab-deriv">—</span></div>
+    <div class="vocab-item"><span class="vocab-word">even with</span><span class="vocab-meaning">~에도 불구하고</span><span class="vocab-pos">phr.</span><span class="vocab-deriv">—</span></div>
+    <div class="vocab-item"><span class="vocab-word">even though</span><span class="vocab-meaning">비록 ~이지만 (사실적 양보)</span><span class="vocab-pos">conj.</span><span class="vocab-deriv">—</span></div>
+    <div class="vocab-item"><span class="vocab-word">reach a goal</span><span class="vocab-meaning">목표에 도달하다</span><span class="vocab-pos">phr.</span><span class="vocab-deriv">goal (n.)</span></div>
+    <div class="vocab-item"><span class="vocab-word">valuable</span><span class="vocab-meaning">귀중한, 가치 있는</span><span class="vocab-pos">adj.</span><span class="vocab-deriv">value (n./v.), invaluable (adj.)</span></div>
+    <div class="vocab-item"><span class="vocab-word">economics</span><span class="vocab-meaning">경제학</span><span class="vocab-pos">n.</span><span class="vocab-deriv">economic (adj.), economist (n.)</span></div>
+    <div class="vocab-item"><span class="vocab-word">huge success</span><span class="vocab-meaning">엄청난 성공</span><span class="vocab-pos">phr.</span><span class="vocab-deriv">succeed (v.), successful (adj.)</span></div>
+  </div>
+
+  <!-- 전문해석 -->
+  <div class="tab-content" id="ch3-t3">
+    <div class="sec-title"><span class="num">4</span> 전문해석</div>
+    <div class="trans-box">
+      <p>임무 완료! 우리의 레모네이드 가판대는 엄청난 성공이었습니다! 더운 날씨 때문에 결국 여분의 얼음을 추가로 구매하게 되었습니다. 또한 일부 고객들에게 무료 리필과 할인을 제공해야 했는데, 이는 마케팅 전략의 일환으로 진행한 것이었습니다. 이러한 추가 비용에도 불구하고, 우리는 여전히 479달러의 이익을 낼 수 있었습니다. 이익 목표를 달성하지는 못했지만, 아동원에 큰 기부를 할 수 있어서 기뻤습니다. 우리는 또한 경제학에서 귀중한 교훈을 얻었는데, 그것은 교실에서는 절대 배울 수 없었을 교훈이었습니다!</p>
+    </div>
+  </div>
+
+  <!-- 주제·요지 -->
+  <div class="tab-content" id="ch3-t4">
+    <div class="sec-title"><span class="num">5</span> 주제·요지</div>
+    <div class="topic-card"><div class="tc-label">주제</div><div class="tc-content">레모네이드 가판대 운영의 최종 결과와 그 과정에서 얻은 경제적 교훈</div></div>
+    <div class="topic-card"><div class="tc-label">요지</div><div class="tc-content">더운 날씨와 마케팅 비용으로 목표 이익($514)에는 미치지 못했지만 $479의 이익으로 아동원에 의미 있는 기부를 했으며, 이 경험을 통해 교실에서는 배울 수 없는 실질적인 경제 교훈을 얻었다.</div></div>
+    <div class="topic-card">
+      <div class="tc-label">구조 흐름</div>
+      <div class="tc-content">
+        <div class="flow-steps">
+          <div class="flow-step">성공 선언<br><small>huge success</small></div>
+          <div class="flow-step">추가 지출 발생<br><small>얼음·리필·할인</small></div>
+          <div class="flow-step">실제 이익 확인<br><small>$479</small></div>
+          <div class="flow-step">교훈 획득<br><small>실전 경제 학습</small></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 변형문제 -->
+  <div class="tab-content" id="ch3-t5">
+    <div class="sec-title"><span class="num">6</span> 변형문제</div>
+
+    <div class="quiz-block" id="q3_1">
+      <div class="q-num">문항 1 · 주제 추론</div>
+      <div class="q-text">다음 글의 주제로 가장 적절한 것은?</div>
+      <div class="options">
+        <button class="opt-btn" onclick="checkAnswer('q3_1',this,false)">① 날씨가 야외 행사 수익에 미치는 영향</button>
+        <button class="opt-btn" onclick="checkAnswer('q3_1',this,false)">② 이익 목표를 달성하는 데 필요한 마케팅 전략</button>
+        <button class="opt-btn" onclick="checkAnswer('q3_1',this,true)">③ 레모네이드 가판대 운영의 결과와 실전 경제 학습의 가치</button>
+        <button class="opt-btn" onclick="checkAnswer('q3_1',this,false)">④ 학교 수업과 실생활 경험의 차이점</button>
+        <button class="opt-btn" onclick="checkAnswer('q3_1',this,false)">⑤ 아동원을 위한 모금 활동의 사회적 의미</button>
+      </div>
+      <div class="q-result" id="q3_1_result"></div>
+      <div class="q-explain" id="q3_1_explain">이 섹션은 가판대 결과($479 이익)와 함께 "a valuable lesson in economics, a lesson we never could have learned in the classroom"이라는 핵심 교훈으로 마무리되므로 ③이 정답.</div>
+      <button class="reset-btn" id="q3_1_reset" onclick="resetQuiz('q3_1')">↺ 다시 풀기</button>
+    </div>
+
+    <div class="quiz-block" id="q3_2">
+      <div class="q-num">문항 2 · 빈칸 추론</div>
+      <div class="q-text">Even with these extra costs, however, we were still able to make a profit of $479. Even though we couldn't reach our profit goal, we were happy that <span class="blank">________________</span>.</div>
+      <div class="options">
+        <button class="opt-btn" onclick="checkAnswer('q3_2',this,false)">① we had followed our original budget</button>
+        <button class="opt-btn" onclick="checkAnswer('q3_2',this,false)">② the weather had been perfect for our stand</button>
+        <button class="opt-btn" onclick="checkAnswer('q3_2',this,true)">③ we were able to make a big donation to the children's home</button>
+        <button class="opt-btn" onclick="checkAnswer('q3_2',this,false)">④ our marketing strategies had worked perfectly</button>
+        <button class="opt-btn" onclick="checkAnswer('q3_2',this,false)">⑤ we had sold more cups than expected</button>
+      </div>
+      <div class="q-result" id="q3_2_result"></div>
+      <div class="q-explain" id="q3_2_explain">본문에서 "we were happy that we were able to make a big donation to the children's home"이라고 직접 서술됨. ③이 정답.</div>
+      <button class="reset-btn" id="q3_2_reset" onclick="resetQuiz('q3_2')">↺ 다시 풀기</button>
+    </div>
+
+    <div class="quiz-block" id="q3_3">
+      <div class="q-num">문항 3 · 어법 오류 찾기</div>
+      <div class="q-text">다음 밑줄 친 부분 중 어법상 틀린 것은?<br><br>
+      ①<u>Because of</u> the hot weather, we ended up ②<u>purchasing</u> extra bags of ice. We also had to give free refills to some customers, ③<u>which</u> we did as part of our marketing strategy. ④<u>Even with</u> these extra costs, we were still able to make a profit of $479. Even though we couldn't reach our goal, we learned a valuable lesson, a lesson we never ⑤<u>can have</u> learned in the classroom.</div>
+      <div class="options">
+        <button class="opt-btn" onclick="checkAnswer('q3_3',this,false)">① Because of</button>
+        <button class="opt-btn" onclick="checkAnswer('q3_3',this,false)">② purchasing</button>
+        <button class="opt-btn" onclick="checkAnswer('q3_3',this,false)">③ which</button>
+        <button class="opt-btn" onclick="checkAnswer('q3_3',this,false)">④ Even with</button>
+        <button class="opt-btn" onclick="checkAnswer('q3_3',this,true)">⑤ can have</button>
+      </div>
+      <div class="q-result" id="q3_3_result"></div>
+      <div class="q-explain" id="q3_3_explain">⑤ can have → could have. 과거의 가능성/불가능을 나타낼 때는 could have + p.p.를 사용. can have p.p.는 비문법적 표현.</div>
+      <button class="reset-btn" id="q3_3_reset" onclick="resetQuiz('q3_3')">↺ 다시 풀기</button>
+    </div>
+
+    <div class="quiz-block" id="q3_4">
+      <div class="q-num">문항 4 · 내용 불일치</div>
+      <div class="q-text">다음 글의 내용과 일치하지 않는 것은?</div>
+      <div class="options">
+        <button class="opt-btn" onclick="checkAnswer('q3_4',this,false)">① 더운 날씨로 인해 계획보다 얼음을 더 구매했다.</button>
+        <button class="opt-btn" onclick="checkAnswer('q3_4',this,false)">② 무료 리필과 할인은 마케팅 전략의 일부로 진행되었다.</button>
+        <button class="opt-btn" onclick="checkAnswer('q3_4',this,true)">③ 추가 비용으로 인해 아동원에 기부를 하지 못했다.</button>
+        <button class="opt-btn" onclick="checkAnswer('q3_4',this,false)">④ 실제 이익은 예상 이익 목표인 $514에 미치지 못했다.</button>
+        <button class="opt-btn" onclick="checkAnswer('q3_4',this,false)">⑤ 이번 경험을 통해 교실에서 배울 수 없는 경제 교훈을 얻었다.</button>
+      </div>
+      <div class="q-result" id="q3_4_result"></div>
+      <div class="q-explain" id="q3_4_explain">③은 틀린 내용. 본문은 "we were happy that we were able to make a big donation to the children's home"이라고 하여 추가 비용에도 불구하고 기부를 했음을 명시함.</div>
+      <button class="reset-btn" id="q3_4_reset" onclick="resetQuiz('q3_4')">↺ 다시 풀기</button>
+    </div>
+
+    <div class="quiz-block" id="q3_5">
+      <div class="q-num">문항 5 · 서술형</div>
+      <div class="e-cond">조건: 본문에서 예상 이익($514)과 실제 이익($479)의 차이가 발생한 원인을 두 가지 찾아 한국어로 쓰고, 이 경험에서 얻은 교훈을 영어로 한 문장으로 쓰시오.</div>
+      <textarea class="essay-textarea" style="min-height:120px;" placeholder="차이 원인 1:&#10;차이 원인 2:&#10;교훈 (영어 한 문장):"></textarea>
+      <button class="show-ans-btn" onclick="toggleAnswer(this)">모범답안 보기</button>
+      <div class="model-answer">
+        <div class="ma-label">모범답안</div>
+        <strong>차이 원인 1:</strong> 더운 날씨로 인해 여분의 얼음을 추가로 구매했기 때문이다.<br>
+        <strong>차이 원인 2:</strong> 마케팅 전략으로 무료 리필과 할인을 일부 고객에게 제공했기 때문이다.<br>
+        <strong>교훈 (영어):</strong> They learned a valuable lesson in economics that they never could have learned in the classroom.
+      </div>
+    </div>
+
+  </div>
+</div><!-- /ch3 -->
+
+</div><!-- /main -->
+
+<script>
+function showChapter(idx) {
+  document.querySelectorAll('.chapter-panel').forEach((el,i) => el.classList.toggle('active', i===idx));
+  document.querySelectorAll('.ch-btn').forEach((el,i) => el.classList.toggle('active', i===idx));
+  window.scrollTo(0,0);
+}
+function showTab(chId, tabId) {
+  const panel = document.getElementById(chId);
+  panel.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  panel.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  const content = document.getElementById(chId+'-'+tabId);
+  if(content) content.classList.add('active');
+  const tabOrder = ['t0','t1','t2','t3','t4','t5'];
+  const idx = tabOrder.indexOf(tabId);
+  const tabs = panel.querySelectorAll('.tab-btn');
+  if(tabs[idx]) tabs[idx].classList.add('active');
+}
+function checkAnswer(qId, btn, isCorrect) {
+  const block = document.getElementById(qId);
+  block.querySelectorAll('.opt-btn').forEach(o => o.disabled = true);
+  const result = document.getElementById(qId+'_result');
+  const explain = document.getElementById(qId+'_explain');
+  const reset = document.getElementById(qId+'_reset');
+  if(isCorrect) {
+    btn.classList.add('correct');
+    result.textContent = '✓ 정답입니다!';
+    result.className = 'q-result show ok';
+  } else {
+    btn.classList.add('wrong');
+    result.textContent = '✗ 오답입니다. 정답을 확인하세요.';
+    result.className = 'q-result show no';
+    block.querySelectorAll('.opt-btn').forEach(o => {
+      const fn = o.getAttribute('onclick') || '';
+      if(fn.includes(',this,true)')) o.classList.add('reveal');
+    });
+  }
+  explain.classList.add('show');
+  reset.classList.add('show');
+}
+function resetQuiz(qId) {
+  const block = document.getElementById(qId);
+  block.querySelectorAll('.opt-btn').forEach(o => { o.disabled = false; o.className = 'opt-btn'; });
+  document.getElementById(qId+'_result').className = 'q-result';
+  document.getElementById(qId+'_explain').classList.remove('show');
+  document.getElementById(qId+'_reset').classList.remove('show');
+}
+function toggleAnswer(btn) {
+  const ans = btn.nextElementSibling;
+  if(ans.classList.contains('show')) { ans.classList.remove('show'); btn.textContent = '모범답안 보기'; }
+  else { ans.classList.add('show'); btn.textContent = '모범답안 숨기기'; }
+}
+</script>
+</body>
+</html>
